@@ -395,7 +395,9 @@ const waitForSignal = async (signalKey) => {
 
  // HITL: wait for signal if needed
  if (step.waitForSignal) {
- await waitForSignal(step.waitForSignal);
+  await updateProcessListStatus(PROCESS_ID, "Needs Attention", "SM Decision Required");
+  await waitForSignal(step.waitForSignal);
+  await updateProcessListStatus(PROCESS_ID, "In Progress", "SM selected option — executing...");
  }
 
  await delay(1500);

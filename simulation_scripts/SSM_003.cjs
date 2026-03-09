@@ -383,7 +383,7 @@ const waitForEmail = async () => {
     reasoning: step.reasoning || [],
     artifacts: step.artifacts || []
    });
-   await updateProcessListStatus(PROCESS_ID, "Needs Attention", "Draft Review: Email Pending");
+   await updateProcessListStatus(PROCESS_ID, isFinal ? "Needs Review" : "Needs Attention", "Draft Review: Email Pending");
 
    // Wait for SM David Mensah to review and click Send
    await waitForEmail();
