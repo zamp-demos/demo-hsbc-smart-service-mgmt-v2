@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
-import { ArrowUp, Activity, Link, X, MessageSquare, Send, Loader2, PlusCircle, History } from 'lucide-react';
+import { ArrowUp, ArrowLeft, History, X } from 'lucide-react';
 import { useLocation } from 'react-router-dom';
 import { chatWithKnowledgeBase } from '../services/geminiService';
 import VersionHistoryPanel from './VersionHistoryPanel';
@@ -10,319 +10,433 @@ import DiffViewModal from './DiffViewModal';
 // Import all knowledge base contents
 import kbContent from '../data/knowledgeBase.md?raw';
 
+// ─── Thread C: Hard-coded demo Q&A ───────────────────────────────────
+const THREAD_C_QA = [
+    {
+        question: "How does Pace handle an email when it first arrives?",
+        answer: `The moment an email lands in the Commercial Cards inbox, Pace begins a structured intake process before doing anything else.
+
+It reads the email and identifies the sender. It then cross-references that sender's email address and domain against the CRM — checking that the person who wrote in is the registered Programme Administrator for the programme they're writing about. If the domain matches, the name matches, and the programme is active, the PA is verified. Only then does Pace treat the email as an authorised instruction.
+
+Once the PA is verified, Pace reads the body of the email and extracts every distinct request — not just the first one. A single email can contain two, three, or more separate asks buried in natural language. Pace classifies each one: is this a decline investigation? A spend data request? A limit change? A name update? Each request type maps to a different set of systems and a different policy check.
+
+By the time Pace has finished the intake — typically within 15 to 20 seconds of the email arriving — it has a verified sender, a structured list of classified requests, the assigned SM identified, a CRM case created, and the relevant programme policy loaded. Then it starts working.`,
+        suggestedFollowUps: [
+            "What if the email comes from someone Pace doesn't recognise?",
+            "How does Pace classify different request types from one email?",
+            "What systems does Pace check during the intake process?"
+        ]
+    },
+    {
+        question: "What if the email comes from someone Pace doesn't recognise?",
+        answer: `That is one of the conditions that immediately pauses Pace's processing and flags the case for SM review.
+
+If the sender's email address doesn't match the registered PA record in the CRM — whether that's a different person, an unregistered domain, or a domain that doesn't match the programme — Pace does not proceed. It does not attempt to reason around the mismatch. It creates a case, logs the incoming email, flags the verification failure with a precise explanation of what didn't match, and routes it directly to the assigned SM.
+
+The reason for this is straightforward. Every action Pace takes in a case — limit changes, travel activations, name updates — is executed on the authority of the PA instruction. If that authority can't be verified, the entire chain that follows is built on an unverified instruction. The risk isn't just a process error; it's a potential social engineering attempt or an impersonation. Pace treats an unverifiable sender the same way a careful SM would: stop, flag, escalate.
+
+The SM then decides whether to call the client directly, request re-submission from a verified address, or handle the case manually. Pace stays out of it until the identity question is resolved.`,
+        suggestedFollowUps: [
+            "Once you escalate something to the SM, what exactly do they get?",
+            "How does Pace handle a domain that partially matches?",
+            "What happens after the SM resolves the identity question?"
+        ]
+    },
+    {
+        question: "Once you escalate something to the SM, what exactly do they get?",
+        answer: `When Pace escalates, it never hands the SM a problem and walks away. It hands them a decision — fully prepared, with everything they need to make it in seconds.
+
+The escalation prompt contains five things. First, a plain-language summary of what the case is and what triggered the escalation — written for someone who hasn't seen the email and needs to get up to speed in 30 seconds. Second, the complete investigation findings to that point: every system Pace has queried, every piece of data it retrieved, every anomaly it detected, every policy rule it applied. Third, two or three clearly labelled options for how to proceed — each one described in terms of what it does, not just what it says. Fourth, a recommended option with the reasoning behind it. Fifth, any regulatory flags — if one of the options carries POCA risk, or a legal exposure, or a compliance constraint, that is called out explicitly against that option.
+
+The SM reads, chooses, confirms. In today's cases, that took eight seconds.
+
+The design principle behind this is deliberate. The SM's judgment is the most valuable and the most scarce resource in the process. Pace is built to protect that resource — to make sure that when the SM is asked to decide, they are deciding on a fully understood situation, not scrambling to catch up on one.`,
+        suggestedFollowUps: [
+            "How does Pace handle an email when it first arrives?",
+            "How does Pace ensure regulatory compliance during escalation?",
+            "What metrics does Pace track across cases?"
+        ]
+    }
+];
+
+function findThreadCMatch(input) {
+    const normalised = input.trim().toLowerCase().replace(/[?.,!'"]/g, '');
+    for (const entry of THREAD_C_QA) {
+        const entryNorm = entry.question.toLowerCase().replace(/[?.,!'"]/g, '');
+        // Exact or close-enough match (substring both ways)
+        if (normalised === entryNorm || entryNorm.includes(normalised) || normalised.includes(entryNorm)) {
+            return entry;
+        }
+        // Also match if 80%+ of words overlap
+        const inputWords = new Set(normalised.split(/\s+/));
+        const entryWords = entryNorm.split(/\s+/);
+        const overlap = entryWords.filter(w => inputWords.has(w)).length;
+        if (overlap / entryWords.length >= 0.75) {
+            return entry;
+        }
+    }
+    return null;
+}
+
+// ─── Initial suggested questions (shown when chat first opens) ───────
+const INITIAL_SUGGESTIONS = [
+    "How does Pace handle an email when it first arrives?",
+    "What if the email comes from someone Pace doesn't recognise?",
+    "Once you escalate something to the SM, what exactly do they get?"
+];
+
+// ─── Chat Message Component ──────────────────────────────────────────
+const ChatMessage = ({ msg, suggestions, onSuggestionClick }) => {
+    const isUser = msg.role === 'user';
+    return (
+        <div className="mb-6">
+            <div className="flex gap-3 w-full">
+                <div className={`w-7 h-7 rounded flex items-center justify-center flex-shrink-0 mt-0.5 ${isUser ? 'bg-[#FFE2D1]' : 'bg-[#2445ff]'}`}>
+                    {isUser ? (
+                        <span className="text-[#AF521F] text-[11px] font-bold font-sans">V</span>
+                    ) : (
+                        <img src="/adam-icon.svg" alt="Pace" className="w-4 h-4 invert brightness-0" />
+                    )}
+                </div>
+                <div className="flex flex-col gap-1 flex-1 min-w-0">
+                    <span className="text-[13px] font-semibold text-[#171717]">{isUser ? 'Vignesh' : 'Pace'}</span>
+                    <div className="text-[13px] text-[#3a3a3a] leading-[1.7] break-words whitespace-pre-wrap">
+                        {msg.content}
+                    </div>
+                    {/* Suggested follow-ups below Pace's answer */}
+                    {!isUser && suggestions && suggestions.length > 0 && (
+                        <div className="flex flex-wrap gap-2 mt-3">
+                            {suggestions.map((s, i) => (
+                                <button
+                                    key={i}
+                                    onClick={() => onSuggestionClick(s)}
+                                    className="px-3 py-1.5 text-[12px] text-[#555] bg-white border border-[#e0e0e0] rounded-full hover:border-[#999] hover:text-[#171717] transition-all cursor-pointer"
+                                >
+                                    {s}
+                                </button>
+                            ))}
+                        </div>
+                    )}
+                </div>
+            </div>
+        </div>
+    );
+};
+
+// ─── Main Component ──────────────────────────────────────────────────
 const KnowledgeBase = () => {
-    const currentKb = { label: 'Knowledge Base', shortLabel: 'KB' };
     const knowledgeBaseContent = kbContent;
 
     const [messages, setMessages] = useState([]);
     const [inputValue, setInputValue] = useState('');
     const [isLoading, setIsLoading] = useState(false);
+    const [showChat, setShowChat] = useState(false);
     const [isHistoryOpen, setIsHistoryOpen] = useState(false);
     const [highlightText, setHighlightText] = useState(null);
     const [viewingVersion, setViewingVersion] = useState(null);
     const [displayContent, setDisplayContent] = useState(knowledgeBaseContent);
     const [latestVersion, setLatestVersion] = useState(null);
-
-    // Diff Modal State
     const [showDiffModal, setShowDiffModal] = useState(false);
     const [isDiffLoading, setIsDiffLoading] = useState(false);
     const [diffData, setDiffData] = useState(null);
+    // Track suggestions per message index
+    const [messageSuggestions, setMessageSuggestions] = useState({});
 
-    const chatEndRef = useRef(null);
+    const messagesEndRef = useRef(null);
     const contentRef = useRef(null);
-
-    // Initial state: No chat messages = full width content with floating chat box at bottom
-    // After first message = split view (Chat left, Content right)
-    const hasStartedChat = messages.length > 0;
+    const chatInputRef = useRef(null);
+    const location = useLocation();
 
     useEffect(() => {
-        chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-    }, [messages]);
+        messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    }, [messages, isLoading]);
 
     useEffect(() => {
-        const fetchLatestVersion = async () => {
+        if (showChat && chatInputRef.current) {
+            chatInputRef.current.focus();
+        }
+    }, [showChat]);
+
+    // Fetch latest version on mount
+    useEffect(() => {
+        const fetchLatest = async () => {
             try {
                 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001';
-                const response = await fetch(`${API_URL}/api/kb/versions`);
-                if (response.ok) {
-                    const data = await response.json();
-                    if (data.versions && data.versions.length > 0) {
-                        setLatestVersion(data.versions[0]);
-                    }
+                const res = await fetch(`${API_URL}/api/kb/versions`);
+                if (res.ok) {
+                    const data = await res.json();
+                    if (data.versions?.length > 0) setLatestVersion(data.versions[0]);
                 }
-            } catch (error) {
-                console.error('Error fetching latest version:', error);
-            }
+            } catch (e) { /* silent */ }
         };
-        fetchLatestVersion();
+        fetchLatest();
     }, []);
 
+    // ─── Send message handler with Thread C intercept ────────────────
     const handleSendMessage = async () => {
-        if (!inputValue.trim() || isLoading) return;
+        const text = inputValue.trim();
+        if (!text || isLoading) return;
 
-        const userMsg = {
-            role: 'user',
-            content: inputValue,
-            timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-        };
+        // Switch to chat view on first message
+        if (!showChat) setShowChat(true);
 
-        setMessages(prev => [...prev, userMsg]);
+        const userMsg = { role: 'user', content: text };
+        const newMessages = [...messages, userMsg];
+        setMessages(newMessages);
         setInputValue('');
         setIsLoading(true);
 
         try {
-            const response = await chatWithKnowledgeBase(inputValue, knowledgeBaseContent, messages);
-            setMessages(prev => [...prev, {
-                role: 'assistant',
-                content: response,
-                timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-            }]);
+            // Thread C intercept — check for hard-coded demo answer
+            const match = findThreadCMatch(text);
+            if (match) {
+                // Simulate brief typing delay for realism
+                await new Promise(r => setTimeout(r, 600));
+                const assistantMsg = { role: 'assistant', content: match.answer };
+                const updatedMessages = [...newMessages, assistantMsg];
+                setMessages(updatedMessages);
+                // Store suggestions for this assistant message index
+                setMessageSuggestions(prev => ({
+                    ...prev,
+                    [updatedMessages.length - 1]: match.suggestedFollowUps
+                }));
+            } else {
+                // Fall through to Gemini API
+                const response = await chatWithKnowledgeBase(text, knowledgeBaseContent, newMessages);
+                const assistantMsg = { role: 'assistant', content: response };
+                setMessages([...newMessages, assistantMsg]);
+            }
         } catch (error) {
-            setMessages(prev => [...prev, {
-                role: 'assistant',
-                content: 'Encountered an error. Please try again.'
-            }]);
+            console.error('Chat error:', error);
+            const errorMsg = { role: 'assistant', content: 'Sorry, I couldn\'t process that. Please try again.' };
+            setMessages([...newMessages, errorMsg]);
         } finally {
             setIsLoading(false);
         }
     };
 
-    const ChatMessage = ({ msg }) => {
-        const isUser = msg.role === 'user';
-        return (
-            <div className="flex w-full mb-8 justify-start">
-                <div className="flex gap-4 w-full">
-                    <div className={`w-8 h-8 rounded flex items-center justify-center flex-shrink-0 mt-0.5 ${isUser ? 'bg-[#FFE2D1]' : 'bg-[#2445ff]'
-                        }`}>
-                        {isUser ? (
-                            <span className="text-[#AF521F] text-xs font-bold font-sans">V</span>
-                        ) : (
-                            <img src="/adam-icon.svg" alt="Pace" className="w-5 h-5 invert brightness-0" />
-                        )}
-                    </div>
-                    <div className="flex flex-col gap-1.5 flex-1 min-w-0">
-                        <div className="flex items-center gap-2">
-                            <span className="text-[13px] font-bold text-[#171717]">{isUser ? 'Vignesh' : 'Pace'}</span>
-                        </div>
-                        <div className="text-[13px] text-[#171717] leading-relaxed break-words whitespace-pre-wrap">
-                            {msg.content}
-                        </div>
-                    </div>
-                </div>
-            </div>
-        );
+    const handleSuggestionClick = (suggestion) => {
+        setInputValue(suggestion);
+        // Auto-send after a tick
+        setTimeout(() => {
+            setInputValue('');
+            // Manually trigger send with the suggestion text
+            const text = suggestion.trim();
+            if (!text) return;
+
+            const userMsg = { role: 'user', content: text };
+            const newMessages = [...messages, userMsg];
+            setMessages(newMessages);
+            setIsLoading(true);
+
+            const match = findThreadCMatch(text);
+            if (match) {
+                setTimeout(() => {
+                    const assistantMsg = { role: 'assistant', content: match.answer };
+                    const updatedMessages = [...newMessages, assistantMsg];
+                    setMessages(updatedMessages);
+                    setMessageSuggestions(prev => ({
+                        ...prev,
+                        [updatedMessages.length - 1]: match.suggestedFollowUps
+                    }));
+                    setIsLoading(false);
+                }, 600);
+            } else {
+                chatWithKnowledgeBase(text, knowledgeBaseContent, newMessages)
+                    .then(response => {
+                        setMessages([...newMessages, { role: 'assistant', content: response }]);
+                    })
+                    .catch(() => {
+                        setMessages([...newMessages, { role: 'assistant', content: 'Sorry, I couldn\'t process that.' }]);
+                    })
+                    .finally(() => setIsLoading(false));
+            }
+        }, 50);
     };
 
+    // ─── Render ──────────────────────────────────────────────────────
     return (
         <div className="flex h-full bg-[#FAFAFA] font-sans">
-            {/* Split View Container */}
-            <div className={`flex w-full h-full transition-all duration-500 ease-in-out`}>
+            <div className="flex flex-col w-full h-full">
 
-                {/* Left Panel: Chat (Appears after chat starts) */}
-                <div className={`h-full bg-white border-r border-[#ebebeb] flex flex-col transition-all duration-500 ease-in-out overflow-hidden ${hasStartedChat ? 'w-[400px] opacity-100' : 'w-0 opacity-0'
-                    }`}>
-                    {/* Chat Header */}
-                    <div className="h-12 border-b border-[#ebebeb] flex items-center justify-between px-4 shrink-0">
-                        <h2 className="text-[13px] font-bold text-[#171717] transition-all duration-300">
-                            {messages[0]?.content || "Chat"}
-                        </h2>
-                        <button
-                            onClick={() => { setMessages([]); setInputValue(''); }}
-                            className="p-1 hover:bg-[#00000005] rounded-full text-[#8f8f8f] hover:text-[#171717] transition-all"
-                            title="New chat"
-                        >
-                            <PlusCircle className="w-4 h-4" />
-                        </button>
-                    </div>
-
-                    {/* Chat Messages */}
-                    <div className="flex-1 overflow-y-auto p-6">
-                        {messages.map((msg, idx) => <ChatMessage key={idx} msg={msg} />)}
-                        {isLoading && (
-                            <div className="flex gap-4 mb-8">
-                                <div className="w-8 h-8 rounded bg-[#2445ff] flex items-center justify-center flex-shrink-0">
-                                    <img src="/adam-icon.svg" alt="Pace" className="w-5 h-5 invert brightness-0" />
+                {/* ══════ CHAT VIEW ══════ */}
+                {showChat ? (
+                    <div className="flex flex-col h-full">
+                        {/* Chat header */}
+                        <div className="flex items-center gap-3 px-8 py-4 border-b border-[#ebebeb] bg-white">
+                            <button
+                                onClick={() => setShowChat(false)}
+                                className="flex items-center gap-1.5 text-[13px] text-[#666] hover:text-[#171717] transition-colors"
+                            >
+                                <ArrowLeft className="w-4 h-4" />
+                                <span>Knowledge Base</span>
+                            </button>
+                            <div className="h-4 w-px bg-[#e0e0e0]" />
+                            <div className="flex items-center gap-2">
+                                <div className="w-5 h-5 rounded bg-[#2445ff] flex items-center justify-center">
+                                    <img src="/adam-icon.svg" alt="Pace" className="w-3.5 h-3.5 invert brightness-0" />
                                 </div>
-                                <div className="flex flex-col gap-2 flex-1">
-                                    <span className="text-[13px] font-bold text-[#171717]">Pace</span>
-                                    <div className="flex gap-1.5 items-center">
-                                        <div className="w-1.5 h-1.5 bg-[#2445ff] rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
-                                        <div className="w-1.5 h-1.5 bg-[#2445ff] rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
-                                        <div className="w-1.5 h-1.5 bg-[#2445ff] rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
+                                <span className="text-[14px] font-medium text-[#171717]">Pace</span>
+                            </div>
+                        </div>
+
+                        {/* Messages area */}
+                        <div className="flex-1 overflow-y-auto">
+                            <div className="max-w-[720px] mx-auto px-6 py-8">
+                                {messages.map((msg, i) => (
+                                    <ChatMessage
+                                        key={i}
+                                        msg={msg}
+                                        suggestions={messageSuggestions[i] && i === messages.length - 1 ? messageSuggestions[i] : null}
+                                        onSuggestionClick={handleSuggestionClick}
+                                    />
+                                ))}
+                                {isLoading && (
+                                    <div className="flex gap-3 mb-6">
+                                        <div className="w-7 h-7 rounded bg-[#2445ff] flex items-center justify-center flex-shrink-0">
+                                            <img src="/adam-icon.svg" alt="Pace" className="w-4 h-4 invert brightness-0" />
+                                        </div>
+                                        <div className="flex flex-col gap-1">
+                                            <span className="text-[13px] font-semibold text-[#171717]">Pace</span>
+                                            <div className="flex gap-1 py-2">
+                                                <div className="w-1.5 h-1.5 bg-[#999] rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
+                                                <div className="w-1.5 h-1.5 bg-[#999] rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
+                                                <div className="w-1.5 h-1.5 bg-[#999] rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
+                                            </div>
+                                        </div>
                                     </div>
+                                )}
+                                <div ref={messagesEndRef} />
+                            </div>
+                        </div>
+
+                        {/* Chat input */}
+                        <div className="px-6 pb-6 pt-2">
+                            <div className="max-w-[720px] mx-auto">
+                                <div className="bg-white border border-[#e0e0e0] rounded-2xl shadow-sm p-1 flex items-center">
+                                    <input
+                                        ref={chatInputRef}
+                                        type="text"
+                                        value={inputValue}
+                                        onChange={(e) => setInputValue(e.target.value)}
+                                        onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
+                                        placeholder="Ask a question..."
+                                        className="flex-1 px-4 py-3 text-[14px] text-[#171717] placeholder-[#8f8f8f] focus:outline-none bg-transparent"
+                                    />
+                                    <button
+                                        onClick={handleSendMessage}
+                                        disabled={!inputValue.trim() || isLoading}
+                                        className={`mr-1 p-2 rounded-lg transition-all ${inputValue.trim() ? 'bg-[#171717] text-white' : 'bg-transparent text-[#ddd]'}`}
+                                    >
+                                        <ArrowUp className="w-4 h-4" />
+                                    </button>
                                 </div>
                             </div>
-                        )}
-                        <div ref={chatEndRef} />
-                    </div>
-
-                    {/* Chat Input (Sticky) */}
-                    <div className="p-4 border-t border-[#ebebeb]">
-                        <div className="relative">
-                            <input
-                                type="text"
-                                value={inputValue}
-                                onChange={(e) => setInputValue(e.target.value)}
-                                onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
-                                placeholder="Ask anything or give feedback..."
-                                className="w-full bg-[#fbfbfb] border border-[#ebebeb] rounded-xl pl-4 pr-10 py-3 text-[15px] placeholder-[#8f8f8f] focus:outline-none focus:border-[#c9c9c9] transition-all"
-                            />
-                            <button
-                                onClick={handleSendMessage}
-                                disabled={!inputValue.trim() || isLoading}
-                                className={`absolute right-2 top-1/2 -translate-y-1/2 p-2 rounded-lg transition-all ${inputValue.trim() ? 'bg-black text-white' : 'bg-transparent text-[#cacaca]'
-                                    }`}
-                            >
-                                <ArrowUp className="w-4 h-4" />
-                            </button>
                         </div>
                     </div>
-                </div>
-
-                {/* Right Panel/Main: Documentation Content */}
-                <div className="flex-1 h-full flex flex-col bg-white overflow-hidden relative">
-                    <div className="flex-1 overflow-y-auto flex flex-col items-center">
-                        <div className="max-w-4xl w-full px-12 py-8 min-h-full">
-                            {/* Title Section */}
-                            <div className="mb-8">
-                                <div className="flex items-center justify-between mb-2">
-                                    <h1 className="text-[36px] font-bold text-[#171717]">{currentKb.label}</h1>
-                                    {viewingVersion && (
-                                        <div className="flex items-center gap-3">
-                                            <div className="px-3 py-1 bg-[#2445ff10] text-[#2445ff] text-[12px] font-bold rounded-full border border-[#2445ff20] flex items-center gap-2">
-                                                <div className="w-1.5 h-1.5 bg-[#2445ff] rounded-full animate-pulse" />
-                                                Viewing Version {viewingVersion.version}
-                                            </div>
-                                            {viewingVersion && (
+                ) : (
+                    /* ══════ KB VIEW ══════ */
+                    <div className="flex flex-col h-full relative">
+                        <div className="flex-1 overflow-y-auto px-10 pt-10 pb-32">
+                            <div className="max-w-[900px] mx-auto">
+                                {/* Header */}
+                                <div className="mb-2">
+                                    <div className="flex items-center justify-between">
+                                        <h1 className="text-[32px] font-bold text-[#171717] tracking-tight">Knowledge Base</h1>
+                                        <div className="flex items-center gap-2">
+                                            {latestVersion && (
                                                 <button
-                                                    onClick={() => {
-                                                        setViewingVersion(null);
-                                                        setDisplayContent(knowledgeBaseContent);
-                                                        setHighlightText(null);
-                                                    }}
-                                                    className="flex items-center gap-1.5 px-3 py-1 bg-[#f5f5f5] text-[#8f8f8f] hover:text-[#171717] text-[12px] font-medium rounded-full transition-colors"
+                                                    onClick={() => setIsHistoryOpen(true)}
+                                                    className="flex items-center gap-1.5 px-3 py-1.5 text-[12px] text-[#666] hover:text-[#171717] border border-[#e0e0e0] rounded-lg hover:border-[#bbb] transition-all"
                                                 >
-                                                    <ArrowUp className="w-3 h-3 rotate-180" />
-                                                    Back to current
+                                                    <History className="w-3.5 h-3.5" />
+                                                    <span>History</span>
                                                 </button>
                                             )}
+                                        </div>
+                                    </div>
+                                    {viewingVersion && (
+                                        <div className="flex items-center gap-2 mt-2">
+                                            <span className="text-[12px] text-[#888] bg-[#f0f0f0] px-2 py-0.5 rounded">
+                                                Viewing: {viewingVersion.name}
+                                            </span>
+                                            <button
+                                                onClick={() => { setViewingVersion(null); setDisplayContent(knowledgeBaseContent); setHighlightText(null); }}
+                                                className="text-[12px] text-[#2445ff] hover:underline"
+                                            >
+                                                Back to latest
+                                            </button>
                                         </div>
                                     )}
                                 </div>
 
-                                <div className="space-y-6">
-                                    <div className="flex items-center gap-10">
-                                        <div className="flex items-center gap-2 text-[14px] text-[#666666] w-28">
-                                            <Activity className="w-4 h-4" />
-                                            <span>Trigger</span>
-                                        </div>
-                                        <button className="flex items-center gap-2 px-3 py-1.5 rounded border border-[#ebebeb] text-[13px] font-medium text-[#171717] hover:bg-[#fbfbfb]">
-                                            <div className="w-4 h-4 rounded-full border border-current flex items-center justify-center">
-                                                <div className="w-2 h-2 rounded-full bg-current" />
-                                            </div>
-                                            Add
-                                        </button>
-                                    </div>
+                                <div className="h-px bg-[#ebebeb] w-full mb-6" />
 
-                                    <div className="flex items-center gap-10">
-                                        <div className="flex items-center gap-2 text-[14px] text-[#666666] w-28">
-                                            <Link className="w-4 h-4" />
-                                            <span>Integration</span>
-                                        </div>
-                                        <button className="flex items-center gap-2 px-3 py-1.5 rounded border border-[#ebebeb] text-[13px] font-medium text-[#171717] hover:bg-[#fbfbfb]">
-                                            <div className="w-4 h-4 rounded-full border border-current flex items-center justify-center">
-                                                <div className="w-2 h-2 rounded-full bg-current" />
-                                            </div>
-                                            Add
-                                        </button>
-                                    </div>
-
-                                    <div className="flex items-center gap-10">
-                                        <div className="flex items-center gap-2 text-[14px] text-[#666666] w-28">
-                                            <History className="w-4 h-4" />
-                                            <span>History</span>
-                                        </div>
-                                        <button
-                                            onClick={() => setIsHistoryOpen(true)}
-                                            className="flex items-center gap-2 px-3 py-1.5 rounded border border-[#ebebeb] text-[13px] font-medium text-[#171717] hover:bg-[#fbfbfb]"
-                                        >
-                                            View versions
-                                        </button>
-                                    </div>
+                                {/* Markdown Content */}
+                                <div className="kb-content" ref={contentRef}>
+                                    <ReactMarkdown
+                                        remarkPlugins={[remarkGfm]}
+                                        components={{
+                                            p: ({ node, ...props }) => {
+                                                const content = props.children;
+                                                if (typeof content === 'string' && highlightText && content.includes(highlightText)) {
+                                                    const parts = content.split(new RegExp(`(${highlightText})`, 'gi'));
+                                                    return (
+                                                        <p {...props}>
+                                                            {parts.map((part, i) =>
+                                                                part.toLowerCase() === highlightText.toLowerCase() ?
+                                                                    <mark key={i} className="bg-yellow-200 px-1 rounded">{part}</mark> : part
+                                                            )}
+                                                        </p>
+                                                    );
+                                                }
+                                                return <p {...props} />;
+                                            },
+                                            li: ({ node, ...props }) => {
+                                                const processContent = (items) => {
+                                                    return React.Children.map(items, item => {
+                                                        if (typeof item === 'string' && highlightText && item.includes(highlightText)) {
+                                                            const parts = item.split(new RegExp(`(${highlightText})`, 'gi'));
+                                                            return parts.map((part, i) =>
+                                                                part.toLowerCase() === highlightText.toLowerCase() ?
+                                                                    <mark key={i} className="bg-yellow-200 px-1 rounded">{part}</mark> : part
+                                                            );
+                                                        }
+                                                        return item;
+                                                    });
+                                                };
+                                                return <li {...props}>{processContent(props.children)}</li>;
+                                            }
+                                        }}
+                                    >
+                                        {displayContent}
+                                    </ReactMarkdown>
                                 </div>
                             </div>
-
-                            <div className="h-px bg-[#ebebeb] w-full mb-8" />
-
-                            {/* Markdown Content */}
-                            <div className="kb-content" ref={contentRef}>
-                                <ReactMarkdown
-                                    remarkPlugins={[remarkGfm]}
-                                    components={{
-                                        p: ({ node, ...props }) => {
-                                            const content = props.children;
-                                            if (typeof content === 'string' && highlightText && content.includes(highlightText)) {
-                                                const parts = content.split(new RegExp(`(${highlightText})`, 'gi'));
-                                                return (
-                                                    <p {...props}>
-                                                        {parts.map((part, i) =>
-                                                            part.toLowerCase() === highlightText.toLowerCase() ?
-                                                                <mark key={i} className="bg-yellow-200 px-1 rounded">{part}</mark> : part
-                                                        )}
-                                                    </p>
-                                                );
-                                            }
-                                            return <p {...props} />;
-                                        },
-                                        li: ({ node, ...props }) => {
-                                            const content = props.children;
-                                            // Recursively handle string children in LI
-                                            const processContent = (items) => {
-                                                return React.Children.map(items, item => {
-                                                    if (typeof item === 'string' && highlightText && item.includes(highlightText)) {
-                                                        const parts = item.split(new RegExp(`(${highlightText})`, 'gi'));
-                                                        return parts.map((part, i) =>
-                                                            part.toLowerCase() === highlightText.toLowerCase() ?
-                                                                <mark key={i} className="bg-yellow-200 px-1 rounded">{part}</mark> : part
-                                                        );
-                                                    }
-                                                    return item;
-                                                });
-                                            };
-                                            return <li {...props}>{processContent(props.children)}</li>;
-                                        }
-                                    }}
-                                >
-                                    {displayContent}
-                                </ReactMarkdown>
-                            </div>
                         </div>
-                    </div>
 
-                    {/* Floating Chat Box (Only before first message) */}
-                    {!hasStartedChat && (
-                        <div className="absolute bottom-10 left-0 right-0 w-full flex justify-center px-4 pointer-events-none z-10">
-                            <div className="max-w-[600px] w-full bg-white border border-[#ebebeb] rounded-2xl shadow-[0_10px_40px_rgba(0,0,0,0.08)] p-1 flex items-center pointer-events-auto">
+                        {/* Floating chat input at bottom of KB */}
+                        <div className="absolute bottom-8 left-0 right-0 flex justify-center px-6 pointer-events-none z-10">
+                            <div className="max-w-[600px] w-full bg-white border border-[#e0e0e0] rounded-2xl shadow-[0_8px_30px_rgba(0,0,0,0.06)] p-1 flex items-center pointer-events-auto">
                                 <input
                                     type="text"
                                     value={inputValue}
                                     onChange={(e) => setInputValue(e.target.value)}
                                     onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
-                                    placeholder="Ask away or give feedback to ✦ Pace"
-                                    className="flex-1 px-5 py-3.5 text-[17px] text-[#171717] placeholder-[#8f8f8f] focus:outline-none bg-transparent"
+                                    placeholder="Ask Pace about this knowledge base..."
+                                    className="flex-1 px-4 py-3 text-[14px] text-[#171717] placeholder-[#8f8f8f] focus:outline-none bg-transparent"
                                 />
                                 <button
                                     onClick={handleSendMessage}
                                     disabled={!inputValue.trim() || isLoading}
-                                    className={`mr-2 p-2 rounded-lg transition-all ${inputValue.trim() ? 'bg-[#171717] text-white shadow-sm' : 'bg-transparent text-[#e5e5e5]'
-                                        }`}
+                                    className={`mr-1 p-2 rounded-lg transition-all ${inputValue.trim() ? 'bg-[#171717] text-white' : 'bg-transparent text-[#ddd]'}`}
                                 >
-                                    <ArrowUp className="w-5 h-5" />
+                                    <ArrowUp className="w-4 h-4" />
                                 </button>
                             </div>
                         </div>
-                    )}
-                </div>
+                    </div>
+                )}
             </div>
 
             <VersionHistoryPanel
@@ -336,7 +450,6 @@ const KnowledgeBase = () => {
                     const previousVersion = allVersions[index + 1];
                     if (!previousVersion) return;
 
-                    // 1. Open diff modal immediately (immediacy!)
                     setShowDiffModal(true);
                     setIsDiffLoading(true);
                     setDiffData({
@@ -346,10 +459,8 @@ const KnowledgeBase = () => {
                         previous: ''
                     });
 
-                    // 2. Select version in background (background update)
                     handleSelectVersion(version);
 
-                    // 3. Fetch data for diff
                     try {
                         const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001';
                         const [currentRes, previousRes] = await Promise.all([
@@ -381,7 +492,6 @@ const KnowledgeBase = () => {
                 }}
             />
 
-            {/* Global Diff Modal (Mounted at root for persistence) */}
             {showDiffModal && diffData && (
                 <DiffViewModal
                     diffData={diffData}
@@ -392,13 +502,11 @@ const KnowledgeBase = () => {
                     }}
                 />
             )}
-        </div >
+        </div>
     );
 
     async function handleSelectVersion(version) {
         setViewingVersion(version);
-
-        // Fetch version content
         try {
             const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001';
             const response = await fetch(`${API_URL}/api/kb/content?versionId=${version.id}`);
@@ -406,32 +514,22 @@ const KnowledgeBase = () => {
                 const data = await response.json();
                 setDisplayContent(data.content || knowledgeBaseContent);
 
-                // Try to find the change to highlight
                 if (version.changes && version.changes.length > 0) {
-                    // Extract keywords from change summary for highlighting
                     const changeText = version.changes[0];
                     let highlightCandidate = changeText;
                     if (changeText.includes(':')) {
                         highlightCandidate = changeText.split(':')[1].trim();
                     }
-
                     if (highlightCandidate.length > 60) {
                         highlightCandidate = highlightCandidate.substring(0, 60);
                     }
-
                     setHighlightText(highlightCandidate);
 
-                    // Scroll to highlighted content after a short delay
                     setTimeout(() => {
                         if (contentRef.current) {
                             const markElement = contentRef.current.querySelector('mark');
                             if (markElement) {
-                                markElement.scrollIntoView({
-                                    behavior: 'smooth',
-                                    block: 'center'
-                                });
-
-                                // Subtle flash effect
+                                markElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
                                 markElement.style.transition = 'background-color 0.5s';
                                 const originalColor = markElement.style.backgroundColor;
                                 markElement.style.backgroundColor = '#fde047';
@@ -440,7 +538,7 @@ const KnowledgeBase = () => {
                                 }, 1000);
                             }
                         }
-                    }, 300); // Reduced delay for better feel
+                    }, 300);
                 }
             }
         } catch (error) {
