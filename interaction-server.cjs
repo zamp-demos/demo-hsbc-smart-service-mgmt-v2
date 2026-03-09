@@ -25,7 +25,7 @@ const FEEDBACK_QUEUE_PATH = path.join(__dirname, 'feedbackQueue.json');
 const KB_VERSIONS_PATH = path.join(DATA_DIR, 'kbVersions.json');
 const SNAPSHOTS_DIR = path.join(DATA_DIR, 'snapshots');
 
-let state = { sent: false, confirmed: false, signals: {} };
+let state = { emailSent: {}, confirmed: false, signals: {} };
 const runningProcesses = new Map();
 
 // --- Startup Initialization ---
@@ -96,7 +96,7 @@ const server = http.createServer(async (req, res) => {
 
     // GET /reset
     if (cleanPath === '/reset') {
-        state = { sent: false, confirmed: false, signals: {} };
+        state = { emailSent: {}, confirmed: false, signals: {} };
         console.log('Demo Reset Triggered');
         fs.writeFileSync(SIGNAL_FILE, JSON.stringify({}, null, 4));
 
@@ -184,19 +184,22 @@ const server = http.createServer(async (req, res) => {
         return;
     }
 
-    // GET /email-status
+    // GET /email-status?caseId=XXX
     if (cleanPath === '/email-status' && req.method === 'GET') {
+        const caseId = parsedUrl.query.caseId || '_global';
+        const sent = state.emailSent[caseId] === true;
         res.writeHead(200, { ...corsHeaders, 'Content-Type': 'application/json' });
-        res.end(JSON.stringify({ sent: state.sent }));
+        res.end(JSON.stringify({ sent }));
         return;
     }
 
     // POST /email-status
     if (cleanPath === '/email-status' && req.method === 'POST') {
         const body = await parseBody(req);
-        state.sent = body.sent === true;
+        const caseId = body.caseId || '_global';
+        state.emailSent[caseId] = body.sent === true;
         res.writeHead(200, { ...corsHeaders, 'Content-Type': 'application/json' });
-        res.end(JSON.stringify({ status: 'ok', sent: state.sent }));
+        res.end(JSON.stringify({ status: 'ok', sent: state.emailSent[caseId] }));
         return;
     }
 

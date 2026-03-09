@@ -55,15 +55,15 @@ const updateProcessListStatus = async (processId, status, currentStatus) => {
  }
 };
 
-const waitForEmail = async () => {
- console.log("Waiting for SM to send email...");
+const waitForEmail = async (caseId) => {
+ console.log(`Waiting for SM to send email for case ${caseId}...`);
  const API_URL = process.env.VITE_API_URL || 'http://localhost:3001';
 
  try {
  await fetch(`${API_URL}/email-status`, {
  method: 'POST',
  headers: { 'Content-Type': 'application/json' },
- body: JSON.stringify({ sent: false })
+ body: JSON.stringify({ sent: false, caseId })
  });
  } catch (e) {
  console.error("Failed to reset email status", e);
@@ -71,11 +71,11 @@ const waitForEmail = async () => {
 
  while (true) {
  try {
- const response = await fetch(`${API_URL}/email-status`);
+ const response = await fetch(`${API_URL}/email-status?caseId=${encodeURIComponent(caseId)}`);
  if (response.ok) {
  const { sent } = await response.json();
  if (sent) {
- console.log("Email Sent by SM!");
+ console.log(`Email Sent by SM for case ${caseId}!`);
  return true;
  }
  }
@@ -354,7 +354,7 @@ const waitForEmail = async () => {
  await updateProcessListStatus(PROCESS_ID, "Needs Review", "Draft Review: Email Pending");
 
  // Wait for SM David Mensah to review and click Send
- await waitForEmail();
+ await waitForEmail(PROCESS_ID);
 
  // After SM sends: mark as completed (final step)
  updateProcessLog(PROCESS_ID, {
