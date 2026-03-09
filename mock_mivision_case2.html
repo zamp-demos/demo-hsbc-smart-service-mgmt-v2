@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>MiVision Card Management System</title>
+    <style>
+        body {
+            font-family: Arial, Verdana, sans-serif;
+            font-size: 11px;
+            background-color: #e8e8e8;
+            margin: 0;
+            padding: 0;
+        }
+        .header {
+            background-color: #003366;
+            color: white;
+            padding: 8px 12px;
+            border-bottom: 2px solid #000;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 16px;
+            font-weight: bold;
+        }
+        .breadcrumb {
+            background-color: #f0f0f0;
+            padding: 6px 12px;
+            border-bottom: 1px solid #999;
+            font-size: 10px;
+            color: #333;
+        }
+        .session-info {
+            background-color: #d0d0d0;
+            padding: 4px 12px;
+            border-bottom: 1px solid #999;
+            font-size: 10px;
+        }
+        .container {
+            padding: 15px;
+            background-color: #f0f0f0;
+        }
+        .section {
+            background-color: white;
+            border: 1px solid #999;
+            margin-bottom: 15px;
+            padding: 10px;
+        }
+        .section-title {
+            background-color: #d0d0d0;
+            padding: 5px 8px;
+            font-weight: bold;
+            font-size: 12px;
+            border: 1px solid #999;
+            margin: -10px -10px 10px -10px;
+        }
+        .alert-banner {
+            background-color: #fff3cd;
+            border: 2px solid #856404;
+            padding: 12px;
+            margin-bottom: 15px;
+            font-size: 11px;
+        }
+        .alert-banner strong {
+            color: #856404;
+            font-size: 12px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 11px;
+        }
+        table.profile td {
+            padding: 6px 8px;
+            border: 1px solid #999;
+        }
+        table.profile td:first-child {
+            background-color: #e8e8e8;
+            font-weight: bold;
+            width: 180px;
+        }
+        table.transactions {
+            margin-top: 10px;
+        }
+        table.transactions th {
+            background-color: #003366;
+            color: white;
+            padding: 6px 8px;
+            border: 1px solid #000;
+            font-weight: bold;
+            text-align: left;
+        }
+        table.transactions td {
+            padding: 5px 8px;
+            border: 1px solid #999;
+            background-color: white;
+        }
+        table.transactions tr:nth-child(even) td {
+            background-color: #f8f8f8;
+        }
+        .highlight-amber {
+            background-color: #fff3cd;
+            font-weight: bold;
+            color: #856404;
+        }
+        .footer {
+            background-color: #d0d0d0;
+            padding: 6px 12px;
+            border-top: 1px solid #999;
+            font-size: 10px;
+            text-align: center;
+            color: #666;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>MiVision Card Management — HSBC Commercial Banking</h1>
+    </div>
+    <div class="breadcrumb">
+        Home > Card Management > Cardholder Profile
+    </div>
+    <div class="session-info">
+        User: S.OKONKWO | Session: MV-20260309-1008 | Last Login: 09-Mar-2026 10:02
+    </div>
+    
+    <div class="container">
+        <div class="alert-banner">
+            <strong>⚠ INTERNAL FLAG — Account flagged for review — see linked alert</strong><br>
+            Alert Reference: SAS-2026-0307-77321<br>
+            Flag Date: 07-Mar-2026 23:14 GMT<br>
+            Status: ACTIVE — Requires Fraud Operations review<br>
+            Policy: Section 6.1.4 — No limit amendment may be processed while a fraud alert remains active
+        </div>
+        
+        <div class="section">
+            <div class="section-title">Cardholder Profile</div>
+            <table class="profile">
+                <tr>
+                    <td>Cardholder</td>
+                    <td>Richard Okafor</td>
+                </tr>
+                <tr>
+                    <td>Title</td>
+                    <td>Head of Technology</td>
+                </tr>
+                <tr>
+                    <td>Client</td>
+                    <td>Clifford Chance LLP</td>
+                </tr>
+                <tr>
+                    <td>Programme</td>
+                    <td>CC-PROG-UK-0112</td>
+                </tr>
+                <tr>
+                    <td>Card Number</td>
+                    <td>****7732</td>
+                </tr>
+                <tr>
+                    <td>Card Type</td>
+                    <td>P-Card (Purchasing Card)</td>
+                </tr>
+                <tr>
+                    <td>Card Status</td>
+                    <td><strong>Active</strong></td>
+                </tr>
+                <tr>
+                    <td>Current Limit</td>
+                    <td>GBP 20,000</td>
+                </tr>
+                <tr>
+                    <td>MTD Balance</td>
+                    <td>GBP 17,840</td>
+                </tr>
+                <tr>
+                    <td>MTD Utilisation</td>
+                    <td class="highlight-amber">89.2%</td>
+                </tr>
+                <tr>
+                    <td>Available Credit</td>
+                    <td>GBP 2,160</td>
+                </tr>
+                <tr>
+                    <td>Last Transaction</td>
+                    <td>07-Mar-2026 — GBP 2,940 — SIGMA ELECTRONICS TRADE</td>
+                </tr>
+            </table>
+        </div>
+        
+        <div class="section">
+            <div class="section-title">Recent Transactions</div>
+            <table class="transactions">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Description</th>
+                        <th>MCC</th>
+                        <th>Amount</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>07-Mar-2026 21:08</td>
+                        <td>SIGMA ELECTRONICS TRADE</td>
+                        <td>5065</td>
+                        <td>GBP 2,940.00</td>
+                        <td>Posted</td>
+                    </tr>
+                    <tr>
+                        <td>05-Mar-2026 20:41</td>
+                        <td>TECHPOINT SUPPLIES LTD</td>
+                        <td>5065</td>
+                        <td>GBP 3,120.00</td>
+                        <td>Posted</td>
+                    </tr>
+                    <tr>
+                        <td>02-Mar-2026 19:22</td>
+                        <td>TECHPOINT SUPPLIES LTD</td>
+                        <td>5065</td>
+                        <td>GBP 2,840.00</td>
+                        <td>Posted</td>
+                    </tr>
+                    <tr>
+                        <td>28-Feb-2026 09:15</td>
+                        <td>MICROSOFT UK LTD</td>
+                        <td>7372</td>
+                        <td>GBP 4,200.00</td>
+                        <td>Posted</td>
+                    </tr>
+                    <tr>
+                        <td>25-Feb-2026 14:30</td>
+                        <td>AMAZON WEB SERVICES</td>
+                        <td>7372</td>
+                        <td>GBP 2,740.00</td>
+                        <td>Posted</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <div style="height: 80px;"></div>
+    </div>
+    
+    <div class="footer">
+        MiVision v8.4.2 | HSBC Internal Use Only | Data Classification: RESTRICTED
+    </div>
+</body>
+</html>

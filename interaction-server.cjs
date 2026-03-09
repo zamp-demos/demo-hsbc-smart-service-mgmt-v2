@@ -121,16 +121,16 @@ const server = http.createServer(async (req, res) => {
                         pathway: "Decline Investigation → Travel Activation → Limit Increase → Spend Data"
                     },
                     {
-                        id: "SSM_002",
-                        name: "Case 2 Placeholder",
+                        id: "CSC-2026-0309-CC-0291",
+                        name: "Routine Limit Increase Uncovers an Unactioned Fraud Alert",
                         category: "Smart Service Management",
-                        stockId: "SSM_002",
+                        stockId: "CSC-2026-0309-CC-0291",
                         status: "Needs Attention",
-                        client: "—",
-                        cardholder: "—",
-                        process: "—",
-                        sm: "—",
-                        pathway: "—"
+                        client: "Clifford Chance LLP (UK)",
+                        cardholder: "Richard Okafor",
+                        process: "PA Email — Exception Handling with HITL",
+                        sm: "Sarah Okonkwo",
+                        pathway: "Limit Request → Fraud Alert Detected → HITL → Hold & Escalate"
                     },
                     {
                         id: "SSM_003",
@@ -149,7 +149,7 @@ const server = http.createServer(async (req, res) => {
 
                 // Reset process log files
                 const emptyLog = JSON.stringify({ logs: [], keyDetails: {} }, null, 4);
-                ["CSC-2026-0309-AON-0847", "SSM_002", "SSM_003"].forEach(id => {
+                ["CSC-2026-0309-AON-0847", "CSC-2026-0309-CC-0291", "SSM_003"].forEach(id => {
                     const f = path.join(DATA_DIR, `process_${id}.json`);
                     if (fs.existsSync(f)) fs.writeFileSync(f, emptyLog);
                 });

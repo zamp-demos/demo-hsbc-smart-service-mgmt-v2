@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>SAS Fraud Management - Investigation Console</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            font-size: 11px;
+            background-color: #0d1b2a;
+            color: #c8c8c8;
+            padding: 0;
+            margin: 0;
+        }
+        .header {
+            background-color: #1a1a2e;
+            padding: 8px 15px;
+            border-bottom: 2px solid #16213e;
+        }
+        .header h1 {
+            font-size: 16px;
+            color: #ffffff;
+            font-weight: bold;
+            margin-bottom: 4px;
+        }
+        .breadcrumb {
+            font-size: 10px;
+            color: #8c8c8c;
+            margin-bottom: 4px;
+        }
+        .session-info {
+            font-size: 10px;
+            color: #a0a0a0;
+            font-family: Consolas, monospace;
+        }
+        .container {
+            padding: 15px;
+        }
+        .section {
+            background-color: #16213e;
+            border: 1px solid #1a1a2e;
+            margin-bottom: 15px;
+            padding: 10px;
+        }
+        .section-title {
+            font-size: 12px;
+            font-weight: bold;
+            color: #ffffff;
+            margin-bottom: 8px;
+            border-bottom: 1px solid #2c3e50;
+            padding-bottom: 4px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 11px;
+            font-family: Consolas, monospace;
+        }
+        th {
+            background-color: #1a1a2e;
+            color: #ffffff;
+            text-align: left;
+            padding: 6px 8px;
+            font-weight: bold;
+            border: 1px solid #0d1b2a;
+        }
+        td {
+            padding: 5px 8px;
+            border: 1px solid #1a1a2e;
+            background-color: #16213e;
+        }
+        tr:nth-child(even) td {
+            background-color: #1a2332;
+        }
+        .alert-open {
+            color: #dc3545;
+            font-weight: bold;
+        }
+        .unassigned {
+            color: #dc3545;
+            font-weight: bold;
+        }
+        .risk-score-large {
+            font-size: 24px;
+            font-weight: bold;
+            color: #ff8c42;
+        }
+        .gauge-container {
+            width: 100%;
+            height: 30px;
+            background-color: #0d1b2a;
+            border: 1px solid #1a1a2e;
+            position: relative;
+            margin: 10px 0;
+        }
+        .gauge-zones {
+            display: flex;
+            height: 100%;
+            width: 100%;
+        }
+        .zone-green {
+            width: 40%;
+            background-color: #28a745;
+        }
+        .zone-amber {
+            width: 30%;
+            background-color: #ffc107;
+        }
+        .zone-orange {
+            width: 14%;
+            background-color: #ff8c42;
+        }
+        .zone-red {
+            width: 16%;
+            background-color: #dc3545;
+        }
+        .gauge-marker {
+            position: absolute;
+            top: 0;
+            left: 74%;
+            width: 3px;
+            height: 100%;
+            background-color: #ffffff;
+            box-shadow: 0 0 5px #ffffff;
+        }
+        .gauge-label {
+            position: absolute;
+            top: -18px;
+            left: 74%;
+            transform: translateX(-50%);
+            font-size: 11px;
+            font-weight: bold;
+            color: #ffffff;
+        }
+        .audit-log {
+            background-color: #0d1b2a;
+            padding: 8px;
+            font-family: Consolas, monospace;
+            font-size: 10px;
+            color: #a0a0a0;
+            border: 1px solid #1a1a2e;
+            max-height: 120px;
+            overflow-y: auto;
+        }
+        .audit-entry {
+            margin-bottom: 3px;
+            line-height: 1.4;
+        }
+        .footer {
+            background-color: #1a1a2e;
+            padding: 6px 15px;
+            border-top: 2px solid #16213e;
+            font-size: 9px;
+            color: #8c8c8c;
+            text-align: center;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+        }
+        .summary-grid {
+            display: table;
+            width: 100%;
+        }
+        .summary-row {
+            display: table-row;
+        }
+        .summary-label {
+            display: table-cell;
+            width: 180px;
+            padding: 5px 8px;
+            font-weight: bold;
+            color: #a0a0a0;
+            border-bottom: 1px solid #1a1a2e;
+        }
+        .summary-value {
+            display: table-cell;
+            padding: 5px 8px;
+            color: #ffffff;
+            border-bottom: 1px solid #1a1a2e;
+        }
+        .total-flagged {
+            font-size: 13px;
+            font-weight: bold;
+            color: #ff8c42;
+            margin-top: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>SAS Fraud Management</h1>
+        <div class="breadcrumb">Dashboard &gt; Alerts &gt; Alert Detail</div>
+        <div class="session-info">Analyst: S.OKONKWO (Read-Only) | FDAR: FDAR-2026-0309-0441 | Session expires: 14:14 GMT</div>
+    </div>
+
+    <div class="container" style="padding-bottom: 40px;">
+        <!-- Alert Summary Section -->
+        <div class="section">
+            <div class="section-title">ALERT SUMMARY</div>
+            <div class="summary-grid">
+                <div class="summary-row">
+                    <div class="summary-label">Alert ID:</div>
+                    <div class="summary-value">SAS-2026-0307-77321</div>
+                </div>
+                <div class="summary-row">
+                    <div class="summary-label">Status:</div>
+                    <div class="summary-value"><span class="alert-open">OPEN</span></div>
+                </div>
+                <div class="summary-row">
+                    <div class="summary-label">Risk Score:</div>
+                    <div class="summary-value"><span class="risk-score-large">74 / 100</span> (Block threshold: 85)</div>
+                </div>
+                <div class="summary-row">
+                    <div class="summary-label">Created:</div>
+                    <div class="summary-value">07-Mar-2026 23:14 GMT</div>
+                </div>
+                <div class="summary-row">
+                    <div class="summary-label">Age:</div>
+                    <div class="summary-value">48 hours</div>
+                </div>
+                <div class="summary-row">
+                    <div class="summary-label">Assigned To:</div>
+                    <div class="summary-value"><span class="unassigned">UNASSIGNED</span></div>
+                </div>
+                <div class="summary-row">
+                    <div class="summary-label">Card:</div>
+                    <div class="summary-value">****7732 — Richard Okafor</div>
+                </div>
+                <div class="summary-row">
+                    <div class="summary-label">Programme:</div>
+                    <div class="summary-value">CC-PROG-UK-0112 — Clifford Chance LLP</div>
+                </div>
+                <div class="summary-row">
+                    <div class="summary-label">Alert Category:</div>
+                    <div class="summary-value">Behavioral Anomaly — Transaction Pattern</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Risk Score Gauge -->
+        <div class="section">
+            <div class="section-title">RISK SCORE VISUALIZATION</div>
+            <div style="position: relative; margin-top: 20px;">
+                <div class="gauge-label">74</div>
+                <div class="gauge-container">
+                    <div class="gauge-zones">
+                        <div class="zone-green"></div>
+                        <div class="zone-amber"></div>
+                        <div class="zone-orange"></div>
+                        <div class="zone-red"></div>
+                    </div>
+                    <div class="gauge-marker"></div>
+                </div>
+                <div style="font-size: 10px; color: #8c8c8c; margin-top: 5px;">
+                    <span style="color: #28a745;">■</span> Low (0-40) &nbsp;&nbsp;
+                    <span style="color: #ffc107;">■</span> Medium (41-70) &nbsp;&nbsp;
+                    <span style="color: #ff8c42;">■</span> High (71-84) &nbsp;&nbsp;
+                    <span style="color: #dc3545;">■</span> Block (85-100)
+                </div>
+            </div>
+        </div>
+
+        <!-- Trigger Analysis -->
+        <div class="section">
+            <div class="section-title">TRIGGER ANALYSIS</div>
+            <table>
+                <thead>
+                    <tr>
+                        <th style="width: 40px;">#</th>
+                        <th style="width: 180px;">Trigger</th>
+                        <th>Detail</th>
+                        <th style="width: 80px;">Weight</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>1</td>
+                        <td>New MCC Activity</td>
+                        <td>First activity in MCC 5065 (Electronic Parts & Equipment)</td>
+                        <td>28/100</td>
+                    </tr>
+                    <tr>
+                        <td>2</td>
+                        <td>Off-Hours Pattern</td>
+                        <td>All 3 transactions between 19:00-21:30 GMT</td>
+                        <td>24/100</td>
+                    </tr>
+                    <tr>
+                        <td>3</td>
+                        <td>High MTD Velocity</td>
+                        <td>117% above 6-month rolling average</td>
+                        <td>22/100</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Flagged Transactions -->
+        <div class="section">
+            <div class="section-title">FLAGGED TRANSACTIONS</div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Date/Time</th>
+                        <th>Merchant</th>
+                        <th style="width: 60px;">MCC</th>
+                        <th style="width: 120px;">Amount</th>
+                        <th style="width: 110px;">Auth Code</th>
+                        <th style="width: 100px;">Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>07-Mar-2026 21:08</td>
+                        <td>SIGMA ELECTRONICS TRADE</td>
+                        <td>5065</td>
+                        <td>GBP 2,940.00</td>
+                        <td>A7732-0921</td>
+                        <td>Authorized</td>
+                    </tr>
+                    <tr>
+                        <td>05-Mar-2026 20:41</td>
+                        <td>TECHPOINT SUPPLIES LTD</td>
+                        <td>5065</td>
+                        <td>GBP 3,120.00</td>
+                        <td>A7732-0520</td>
+                        <td>Authorized</td>
+                    </tr>
+                    <tr>
+                        <td>02-Mar-2026 19:22</td>
+                        <td>TECHPOINT SUPPLIES LTD</td>
+                        <td>5065</td>
+                        <td>GBP 2,840.00</td>
+                        <td>A7732-0219</td>
+                        <td>Authorized</td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="total-flagged">Total Flagged Amount: GBP 8,900.00</div>
+        </div>
+
+        <!-- Audit Trail -->
+        <div class="section">
+            <div class="section-title">AUDIT TRAIL LOG</div>
+            <div class="audit-log">
+                <div class="audit-entry">[07-Mar-2026 23:14:02] SYSTEM: Alert generated — behavioral anomaly triggers activated</div>
+                <div class="audit-entry">[07-Mar-2026 23:14:03] SYSTEM: Risk score calculated: 74/100 (below block threshold 85)</div>
+                <div class="audit-entry">[07-Mar-2026 23:14:03] SYSTEM: Alert queued for Fraud Operations review</div>
+                <div class="audit-entry">[09-Mar-2026 10:14:19] SYSTEM: FDAR-2026-0309-0441 — read-only access granted to S.OKONKWO</div>
+                <div class="audit-entry">[09-Mar-2026 10:14:22] ACCESS: S.OKONKWO opened alert detail (read-only session)</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer">
+        SAS Fraud Management v9.4 | HSBC Fraud Operations | Classification: HIGHLY RESTRICTED
+    </div>
+</body>
+</html>

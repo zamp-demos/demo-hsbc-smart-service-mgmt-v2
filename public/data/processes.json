@@ -12,16 +12,16 @@
         "pathway": "Decline Investigation \u2192 Travel Activation \u2192 Limit Increase \u2192 Spend Data"
     },
     {
-        "id": "SSM_002",
-        "name": "Case 2 Placeholder",
+        "id": "CSC-2026-0309-CC-0291",
+        "name": "Routine Limit Increase Uncovers an Unactioned Fraud Alert",
         "category": "Smart Service Management",
-        "stockId": "SSM_002",
+        "stockId": "CSC-2026-0309-CC-0291",
         "status": "Needs Attention",
-        "client": "\u2014",
-        "cardholder": "\u2014",
-        "process": "\u2014",
-        "sm": "\u2014",
-        "pathway": "\u2014"
+        "client": "Clifford Chance LLP (UK)",
+        "cardholder": "Richard Okafor",
+        "process": "PA Email \u2014 Exception Handling with HITL",
+        "sm": "Sarah Okonkwo",
+        "pathway": "Limit Request \u2192 Fraud Alert Detected \u2192 HITL \u2192 Hold & Escalate"
     },
     {
         "id": "SSM_003",
