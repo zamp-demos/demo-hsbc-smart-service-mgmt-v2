@@ -133,23 +133,23 @@ const server = http.createServer(async (req, res) => {
                         pathway: "Limit Request → Fraud Alert Detected → HITL → Hold & Escalate"
                     },
                     {
-                        id: "SSM_003",
-                        name: "Case 3 Placeholder",
+                        id: "CSC-2026-0309-HSF-0314",
+                        name: "Cardholder Name Change — Three-Document Identity Chain",
                         category: "Smart Service Management",
-                        stockId: "SSM_003",
+                        stockId: "CSC-2026-0309-HSF-0314",
                         status: "Needs Attention",
-                        client: "—",
-                        cardholder: "—",
-                        process: "—",
-                        sm: "—",
-                        pathway: "—"
+                        client: "Herbert Smith Freehills LLP (UK)",
+                        cardholder: "Eleanor Whitfield-Osei",
+                        process: "PA Email — Document Ingestion & Identity Chain Validation",
+                        sm: "David Mensah",
+                        pathway: "Email Received → Marriage Cert Extracted → MiVision Cross-Ref → Discrepancy → Doc Request → Passport Received → Identity Chain Validated → Name Changed → Replacement Card"
                     }
                 ];
                 fs.writeFileSync(PROCESSES_FILE, JSON.stringify(cases, null, 4));
 
                 // Reset process log files
                 const emptyLog = JSON.stringify({ logs: [], keyDetails: {} }, null, 4);
-                ["CSC-2026-0309-AON-0847", "CSC-2026-0309-CC-0291", "SSM_003"].forEach(id => {
+                ["CSC-2026-0309-AON-0847", "CSC-2026-0309-CC-0291", "CSC-2026-0309-HSF-0314"].forEach(id => {
                     const f = path.join(DATA_DIR, `process_${id}.json`);
                     if (fs.existsSync(f)) fs.writeFileSync(f, emptyLog);
                 });
@@ -159,7 +159,8 @@ const server = http.createServer(async (req, res) => {
 
                 const scripts = [
                     { file: 'SSM_001.cjs', id: 'CSC-2026-0309-AON-0847' },
-                    { file: 'SSM_002.cjs', id: 'CSC-2026-0309-CC-0291' }
+                    { file: 'SSM_002.cjs', id: 'CSC-2026-0309-CC-0291' },
+                    { file: 'SSM_003.cjs', id: 'CSC-2026-0309-HSF-0314' }
                 ];
                 let totalDelay = 0;
                 scripts.forEach((script) => {
@@ -439,7 +440,8 @@ server.listen(PORT, '0.0.0.0', () => {
     // Auto-run simulations on startup so dashboard has data immediately
     const startupScripts = [
         { file: 'SSM_001.cjs', id: 'CSC-2026-0309-AON-0847' },
-        { file: 'SSM_002.cjs', id: 'CSC-2026-0309-CC-0291' }
+        { file: 'SSM_002.cjs', id: 'CSC-2026-0309-CC-0291' },
+        { file: 'SSM_003.cjs', id: 'CSC-2026-0309-HSF-0314' }
     ];
     let delay = 0;
     startupScripts.forEach(script => {
