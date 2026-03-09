@@ -114,13 +114,28 @@ const server = http.createServer(async (req, res) => {
                         category: "Smart Service Management",
                         stockId: "CSC-2026-0309-AON-0847",
                         year: "2026-03-09",
-                        status: "In Progress",
-                        currentStatus: "Initializing...",
+                        status: "Needs Attention",
                         client: "Aon plc (UK)",
                         pa: "Rachel Griffiths",
                         cardLast4: "4421",
                         process: "PA Email — Multi-Request Resolution",
                         pathway: "Decline Investigation → Travel Activation → Limit Increase → Spend Data"
+                    },
+                    {
+                        id: "SSM_002",
+                        name: "Case 2 Placeholder",
+                        category: "Smart Service Management",
+                        stockId: "SSM_002",
+                        year: "2026",
+                        status: "Needs Attention"
+                    },
+                    {
+                        id: "SSM_003",
+                        name: "Case 3 Placeholder",
+                        category: "Smart Service Management",
+                        stockId: "SSM_003",
+                        year: "2026",
+                        status: "Needs Attention"
                     }
                 ];
                 fs.writeFileSync(PROCESSES_FILE, JSON.stringify(cases, null, 4));
