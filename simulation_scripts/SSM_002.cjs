@@ -81,8 +81,11 @@ const waitForSignal = async (signalKey) => {
  keyDetails: {
  "Client": "Clifford Chance LLP (UK)",
  "Cardholder": "Richard Okafor ••••7732",
- "Programme": "CC-PROG-UK-0112",
+ "Role": "Senior Associate, Corporate M&A",
+ "Programme Administrator": "James Whitworth",
+ "Request Type": "Limit Increase (Possible Fraud)",
  "SM Assigned": "Sarah Okonkwo",
+ "Programme": "CC-PROG-UK-0112",
   }
  });
 
@@ -344,19 +347,14 @@ const waitForSignal = async (signalKey) => {
  },
  {
  id: "step-9",
- title_p: "Writing knowledge base entry and updating CRM case log...",
- title_s: "Knowledge Base Updated & Case Logged",
+ title_p: "Updating CRM case log and closing case...",
+ title_s: "CRM Case Logged & Closed",
  reasoning: [
- "Novel pattern recognised — first recorded instance of a PA limit increase request intersecting an active, unactioned fraud alert above the auto-approve threshold.",
- "Knowledge base entry KB-FRAUD-LIMIT-HOLD-001 created.",
- "Pattern stored: limit request + active fraud alert + unactioned >24 hours + amount above auto-approve ceiling.",
  "SM decision recorded: Option B — hold limit, escalate fraud alert, send holding response.",
- "Regulatory constraint stored: POCA 2002 tipping-off provisions apply — no fraud-related detail may be disclosed to PA or cardholder while alert is under Fraud Operations review.",
- "Future encounters: Pace will auto-execute Option B without requiring HITL.",
- "CRM case CSC-2026-0309-CC-0291 updated with full action log — all steps, decisions, and artifacts recorded."
+ "CRM case CSC-2026-0309-CC-0291 updated with full action log — all steps, decisions, and artifacts recorded.",
+ "Case closed — all actions complete, audit trail preserved."
  ],
  artifacts: [
- { id: "art-17", type: "file", label: "Knowledge Base Entry", pdfPath: "/data/Case2_Knowledge_Base_Entry.pdf" },
  { id: "art-18", type: "file", label: "CRM Case Log", pdfPath: "/data/Case2_CRM_Case_Log.pdf" }
  ]
  }

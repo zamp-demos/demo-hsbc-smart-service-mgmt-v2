@@ -93,8 +93,11 @@ const waitForEmail = async (caseId) => {
  keyDetails: {
  "Client": "Aon plc (UK)",
  "Cardholder": "Sophia Chen ••••4421",
- "Programme": "AON-UK-CC-0047",
+ "Role": "Managing Director, Strategic Advisory",
+ "Programme Administrator": "Rachel Griffiths",
+ "Request Type": "Multi-Request (Decline + Limit + Spend Data)",
  "SM Assigned": "David Mensah",
+ "Programme": "AON-UK-CC-0047",
   }
  });
 
@@ -119,7 +122,7 @@ const waitForEmail = async (caseId) => {
  to: "hsbc.commercialcards.uk@hsbc.com",
  subject: "Three things — Sophia Chen card 4421",
  isIncoming: true,
- body: "Hi HSBC team,\n\nThree things on Sophia Chen's card (ending 4421) — she's our MD in Strategic Advisory and is about to head to APAC for a three-week client roadshow.\n\n1. Her card was declined yesterday evening at the Marina Bay Sands hotel in Singapore. Can you look into what happened and make sure it works for the trip? She'll be there from Monday and is panicking a bit about having no card access.\n\n2. I need a Q1 2026 spend breakdown for Sophia's card for our internal audit — ideally with merchant-level detail and cost centre codes. Our finance team needs this by end of week if possible.\n\n3. Her current limit is GBP 25,000. Given the APAC roadshow (client dinners, hotels across Singapore, Tokyo, Hong Kong), would it be possible to review and increase to GBP 35,000? I think it falls within what we're allowed to request but let me know if you need anything from me.\n\nAppreciate the help.\n\nBest,\nRachel\n\n--\nRachel Griffiths\nCommercial Cards Programme Administrator\nAon plc | 122 Leadenhall Street, London EC3V 4AN\nT: +44 20 7623 5500 ext. 4471 | rachel.griffiths@aon.com"
+ body: "Hi HSBC team,\n\nThree things on Sophia Chen's card (ending 4421) — she's our MD in Strategic Advisory and is currently in APAC on a three-week client roadshow — apologies, we should have let you know sooner.\n\n1. Her card was declined yesterday evening at the Marina Bay Sands hotel in Singapore. Can you look into what happened and make sure it works for the trip? She's already there and is panicking a bit about having no card access.\n\n2. I need a Q1 2026 spend breakdown for Sophia's card for our internal audit — ideally with merchant-level detail and cost centre codes. Our finance team needs this by end of week if possible.\n\n3. Her current limit is GBP 25,000. Given the APAC roadshow (client dinners, hotels across Singapore, Tokyo, Hong Kong), would it be possible to review and increase to GBP 35,000? I think it falls within what we're allowed to request but let me know if you need anything from me.\n\nAppreciate the help.\n\nBest,\nRachel\n\n--\nRachel Griffiths\nCommercial Cards Programme Administrator\nAon plc | 122 Leadenhall Street, London EC3V 4AN\nT: +44 20 7623 5500 ext. 4471 | rachel.griffiths@aon.com"
  }
  }]
  },
@@ -252,12 +255,12 @@ const waitForEmail = async (caseId) => {
  type: "email_draft",
  label: "Smart Data Approval Email",
  data: {
- from: "p.nair@aon.com",
+ from: "a.desai@aon.com",
  to: "pace.servicehub@hsbc.com",
  cc: "rachel.griffiths@aon.com",
  subject: "RE: [Action Required] Mastercard Smart Data OnLine — Data Distribution Authorisation — AON-UK-CC-0047",
  isIncoming: true,
- body: "Hi,\n\nHappy to approve — please go ahead and access the Q1 2026 data for Sophia's card.\n\nReference: SD-DDR-2026-0309-AON047\n\nThanks,\nPriya\n\n--\nPriya Nair\nGlobal Smart Data Administrator | Aon plc\np.nair@aon.com | +44 20 7623 5500 ext. 5102"
+ body: "Hi,\n\nHappy to approve — please go ahead and access the Q1 2026 data for Sophia's card.\n\nReference: SD-DDR-2026-0309-AON047\n\nThanks,\nAnita\n\n--\nAnita Desai\nGlobal Smart Data Administrator | Aon plc\na.desai@aon.com | +44 20 7623 5500 ext. 5102"
  }
  },
  {

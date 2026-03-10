@@ -191,7 +191,7 @@ const KnowledgeBase = () => {
             const match = findThreadCMatch(text);
             if (match) {
                 // Simulate brief typing delay for realism
-                await new Promise(r => setTimeout(r, 600));
+                await new Promise(r => setTimeout(r, 3000));
                 const assistantMsg = { role: 'assistant', content: match.answer };
                 const updatedMessages = [...newMessages, assistantMsg];
                 setMessages(updatedMessages);
@@ -240,7 +240,7 @@ const KnowledgeBase = () => {
                         [updatedMessages.length - 1]: match.suggestedFollowUps
                     }));
                     setIsLoading(false);
-                }, 600);
+                }, 3000);
             } else {
                 chatWithKnowledgeBase(text, knowledgeBaseContent, newMessages)
                     .then(response => {

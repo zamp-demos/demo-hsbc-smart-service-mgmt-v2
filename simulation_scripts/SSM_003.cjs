@@ -93,8 +93,11 @@ const waitForEmail = async (caseId) => {
   keyDetails: {
    "Client": "Herbert Smith Freehills LLP (UK)",
    "Cardholder": "Eleanor Whitfield-Osei \u2022\u2022\u2022\u20222847",
-   "Programme": "HSF-PROG-UK-0089",
+   "Role": "Partner, Energy & Infrastructure",
+   "Programme Administrator": "Priya Nair",
+   "Request Type": "Cardholder Name Change",
    "SM Assigned": "David Mensah",
+   "Programme": "HSF-PROG-UK-0089",
      }
  });
 
