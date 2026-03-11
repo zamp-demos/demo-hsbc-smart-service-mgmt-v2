@@ -1038,16 +1038,21 @@ const ProcessDetails = () => {
         }
     }, [id, isSimulating]);
 
-    const currentIndex = allProcesses.findIndex(p => String(p.id) === String(id));
+    // Filter processes by same category for up/down navigation
+    const currentCategory = processMetadata?.category;
+    const categoryProcesses = currentCategory
+        ? allProcesses.filter(p => p.category === currentCategory)
+        : allProcesses;
+    const currentIndex = categoryProcesses.findIndex(p => String(p.id) === String(id));
     const canGoUp = currentIndex > 0;
-    const canGoDown = currentIndex < allProcesses.length - 1;
+    const canGoDown = currentIndex < categoryProcesses.length - 1;
 
     const handleNavigateUp = () => {
-        if (canGoUp) navigate(`/done/process/${allProcesses[currentIndex - 1].id}`);
+        if (canGoUp) navigate(`/done/process/${categoryProcesses[currentIndex - 1].id}`);
     };
 
     const handleNavigateDown = () => {
-        if (canGoDown) navigate(`/done/process/${allProcesses[currentIndex + 1].id}`);
+        if (canGoDown) navigate(`/done/process/${categoryProcesses[currentIndex + 1].id}`);
     };
 
     const getIconComponent = (iconType) => {

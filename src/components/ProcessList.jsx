@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { Filter, Check, Loader2, Search, SlidersHorizontal, Activity } from 'lucide-react';
 
 const ProcessList = ({ category = 'Data Integrity Review' }) => {
     const navigate = useNavigate();
+    const location = useLocation();
     const [activeTab, setActiveTab] = useState('Needs Attention');
     const [processes, setProcesses] = useState([]);
 
@@ -132,7 +133,7 @@ const ProcessList = ({ category = 'Data Integrity Review' }) => {
                                 <tr
                                     key={process.id}
                                     className="hover:bg-[#f9f9f9] cursor-pointer transition-colors border-b border-[#f2f2f2] last:border-0"
-                                    onClick={() => navigate(`/done/process/${process.id}`)}
+                                    onClick={() => { sessionStorage.setItem('process_list_origin', location.pathname); navigate(`/done/process/${process.id}`); }}
                                 >
                                     <td className="px-6 py-2.5 whitespace-nowrap">
                                         <div className="flex items-center gap-3">

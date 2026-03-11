@@ -17,6 +17,9 @@ function App() {
           <Route path="smart-service-management" element={
             <ProcessList key="smart-service-management" title="Smart Service Management" category="Smart Service Management" />
           } />
+          <Route path="dispute-resolution" element={
+            <ProcessList key="dispute-resolution" title="Dispute Resolution" category="Dispute Resolution" />
+          } />
           <Route path="knowledge-base" element={<KnowledgeBase />} />
           <Route path="people" element={<PeoplePage />} />
           <Route path="process/:id" element={<ProcessDetails />} />

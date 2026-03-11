@@ -157,23 +157,21 @@ const server = http.createServer(async (req, res) => {
                 fs.writeFileSync(FEEDBACK_QUEUE_PATH, '[]');
                 fs.writeFileSync(KB_VERSIONS_PATH, '[]');
 
-                const scripts = [
-                    { file: 'SSM_001.cjs', id: 'CSC-2026-0309-AON-0847' },
-                    { file: 'SSM_002.cjs', id: 'CSC-2026-0309-CC-0291' },
-                    { file: 'SSM_003.cjs', id: 'CSC-2026-0309-HSF-0314' }
-                ];
+                // Dynamically discover all simulation scripts
+                const simDir2 = path.join(__dirname, 'simulation_scripts');
+                const resetScripts = fs.readdirSync(simDir2).filter(f => f.endsWith('.cjs') && !f.startsWith('.'));
                 let totalDelay = 0;
-                scripts.forEach((script) => {
+                resetScripts.forEach((file) => {
                     setTimeout(() => {
-                        const scriptPath = path.join(__dirname, 'simulation_scripts', script.file);
+                        const scriptPath = path.join(simDir2, file);
                         const child = exec(
                             `node "${scriptPath}" > "${scriptPath}.log" 2>&1`,
                             (error) => {
-                                if (error && error.code !== 0) console.error(`${script.file} error:`, error.message);
-                                runningProcesses.delete(script.id);
+                                if (error && error.code !== 0) console.error(`${file} error:`, error.message);
+                                runningProcesses.delete(file);
                             }
                         );
-                        runningProcesses.set(script.id, child);
+                        runningProcesses.set(file, child);
                     }, totalDelay * 1000);
                     totalDelay += 2;
                 });
@@ -439,23 +437,21 @@ const server = http.createServer(async (req, res) => {
 
 
 server.listen(PORT, '0.0.0.0', () => {
-    console.log(`HSBC Smart Service Management server running on port ${PORT}`);
+    console.log(`HSBC Commercial Cards server running on port ${PORT}`);
     // Auto-run simulations on startup so dashboard has data immediately
-    const startupScripts = [
-        { file: 'SSM_001.cjs', id: 'CSC-2026-0309-AON-0847' },
-        { file: 'SSM_002.cjs', id: 'CSC-2026-0309-CC-0291' },
-        { file: 'SSM_003.cjs', id: 'CSC-2026-0309-HSF-0314' }
-    ];
+    // Dynamically discover all simulation scripts
+    const simDir = path.join(__dirname, 'simulation_scripts');
+    const scriptFiles = fs.readdirSync(simDir).filter(f => f.endsWith('.cjs') && !f.startsWith('.'));
     let delay = 0;
-    startupScripts.forEach(script => {
+    scriptFiles.forEach(file => {
         setTimeout(() => {
-            const scriptPath = path.join(__dirname, 'simulation_scripts', script.file);
+            const scriptPath = path.join(simDir, file);
             const child = exec(`node "${scriptPath}" > "${scriptPath}.log" 2>&1`, (error) => {
-                if (error && error.code !== 0) console.error(`${script.file} startup error:`, error.message);
-                runningProcesses.delete(script.id);
+                if (error && error.code !== 0) console.error(`${file} startup error:`, error.message);
+                runningProcesses.delete(file);
             });
-            runningProcesses.set(script.id, child);
-            console.log(`Auto-started ${script.file}`);
+            runningProcesses.set(file, child);
+            console.log(`Auto-started ${file}`);
         }, delay * 1000);
         delay += 2;
     });

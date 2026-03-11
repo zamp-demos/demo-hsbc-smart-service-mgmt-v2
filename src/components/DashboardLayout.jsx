@@ -21,7 +21,8 @@ import {
     AlignLeft,
     Sun,
     Square,
-    Check
+    Check,
+    Scale
 } from 'lucide-react';
 import FeedbackModal from './FeedbackModal';
 import FeedbackQueuePanel from './FeedbackQueuePanel';
@@ -173,7 +174,13 @@ const DashboardLayout = () => {
                             to="/done/smart-service-management"
                             icon={<Activity />}
                             label="Smart Service Management"
-                            isActive={location.pathname.includes('smart-service-management') || isProcessDetailPage}
+                            isActive={location.pathname.includes('smart-service-management')}
+                        />
+                        <SidebarItem
+                            to="/done/dispute-resolution"
+                            icon={<Scale />}
+                            label="Dispute Resolution"
+                            isActive={location.pathname.includes('dispute-resolution')}
                         />
                     </div>
 
@@ -235,7 +242,7 @@ const DashboardLayout = () => {
                                 </>
                             ) : isProcessDetailPage ? (
                                 <>
-                                    <button onClick={() => navigate('/done/smart-service-management')} className="hover:bg-white rounded p-1 transition-colors">
+                                    <button onClick={() => navigate(sessionStorage.getItem('process_list_origin') || '/done/smart-service-management')} className="hover:bg-white rounded p-1 transition-colors">
                                         <ArrowLeft className="w-3.5 h-3.5 text-[#171717]" />
                                     </button>
                                     <span className="text-[#171717] font-[550]">Smart Service Management</span>
