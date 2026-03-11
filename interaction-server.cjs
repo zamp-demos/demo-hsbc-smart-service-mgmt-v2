@@ -161,7 +161,8 @@ const server = http.createServer(async (req, res) => {
                         name: "Linklaters — Duplicate Adobe charge on ····3874",
                         category: "Dispute Resolution",
                         stockId: "CB-2026-0315-LNK-0082",
-                        status: "In Progress",
+                        status: "Done",
+                        currentStatus: "Resolved in HSBC's Favour",
                         client: "Linklaters LLP",
                         cardholder: "Amara Diallo",
                         process: "Duplicate Charge — Chargeback Filing (Adobe Systems)",
@@ -183,7 +184,7 @@ const server = http.createServer(async (req, res) => {
 
                 // Dynamically discover all simulation scripts
                 const simDir2 = path.join(__dirname, 'simulation_scripts');
-                const resetScripts = fs.readdirSync(simDir2).filter(f => f.endsWith('.cjs') && !f.startsWith('.'));
+                const resetScripts = fs.readdirSync(simDir2).filter(f => f.endsWith('.cjs') && !f.startsWith('.') && f !== 'DR_002.cjs');
                 let totalDelay = 0;
                 resetScripts.forEach((file) => {
                     setTimeout(() => {
@@ -465,7 +466,7 @@ server.listen(PORT, '0.0.0.0', () => {
     // Auto-run simulations on startup so dashboard has data immediately
     // Dynamically discover all simulation scripts
     const simDir = path.join(__dirname, 'simulation_scripts');
-    const scriptFiles = fs.readdirSync(simDir).filter(f => f.endsWith('.cjs') && !f.startsWith('.'));
+    const scriptFiles = fs.readdirSync(simDir).filter(f => f.endsWith('.cjs') && !f.startsWith('.') && f !== 'DR_002.cjs');
     let delay = 0;
     scriptFiles.forEach(file => {
         setTimeout(() => {
