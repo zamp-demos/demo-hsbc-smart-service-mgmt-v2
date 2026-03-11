@@ -11,8 +11,26 @@ const PROCESSES_FILE = path.join(__dirname, '..', 'public', 'data', 'processes.j
 
 function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
 
-function updateProcessLog(steps) {
-  fs.writeFileSync(PROCESS_FILE, JSON.stringify({ steps }, null, 2));
+function updateProcessLog(logEntry, keyDetailsUpdate = {}) {
+  let data = { logs: [], keyDetails: {}, sidebarArtifacts: [] };
+  if (fs.existsSync(PROCESS_FILE)) {
+    try { data = JSON.parse(fs.readFileSync(PROCESS_FILE, 'utf8')); } catch(e) {}
+    if (!data.logs) data.logs = [];
+    if (!data.keyDetails) data.keyDetails = {};
+    if (!data.sidebarArtifacts) data.sidebarArtifacts = [];
+  }
+  if (logEntry) {
+    const existingIdx = logEntry.id ? data.logs.findIndex(l => l.id === logEntry.id) : -1;
+    if (existingIdx !== -1) {
+      data.logs[existingIdx] = { ...data.logs[existingIdx], ...logEntry };
+    } else {
+      data.logs.push(logEntry);
+    }
+  }
+  if (keyDetailsUpdate && Object.keys(keyDetailsUpdate).length > 0) {
+    data.keyDetails = { ...data.keyDetails, ...keyDetailsUpdate };
+  }
+  fs.writeFileSync(PROCESS_FILE, JSON.stringify(data, null, 2));
 }
 
 function updateProcessListStatus(status, currentStatus) {
@@ -287,51 +305,53 @@ const STEPS = [
 // Ensure process entry exists in processes.json
 function ensureProcessEntry() {
   const list = JSON.parse(fs.readFileSync(PROCESSES_FILE, 'utf8'));
-  if (!list.find(p => p.id === CASE_ID)) {
-    list.push({
-      id: CASE_ID,
-      title: "Linklaters \u2014 Duplicate Adobe charge on \u2022\u2022\u2022\u20223874",
-      category: "Dispute Resolution",
-      assignee: "Sarah Okonkwo",
-      status: "In Progress",
-      currentStatus: "Processing dispute",
-      createdAt: "2026-03-15T10:41:08Z",
-      updatedAt: "2026-03-15T10:41:08Z",
-      caseDetails: {
-        client: "Linklaters LLP",
-        programme: "LNK-PROG-UK-0019",
-        cardholder: "Amara Diallo",
-        cardLast4: "3874",
-        merchant: "Adobe Systems Europe Ltd",
-        amount: "GBP 4,180.00",
-        reasonCode: "4834 \u2014 Duplicate Processing",
-        mdrRef: "MC-2026-031-0194423"
-      }
-    });
-    fs.writeFileSync(PROCESSES_FILE, JSON.stringify(list, null, 2));
-  }
+  const existing = list.findIndex(p => p.id === CASE_ID);
+  const caseEntry = {
+    id: CASE_ID,
+    name: "Linklaters \u2014 Duplicate Adobe charge on \u00b7\u00b7\u00b7\u00b73874",
+    category: "Dispute Resolution",
+    client: "Linklaters LLP",
+    cardholder: "Amara Diallo",
+    sm: "Sarah Okonkwo",
+    status: "In Progress",
+    pathway: "Dispute Resolution",
+    process: CASE_ID,
+    stockId: CASE_ID
+  };
+  if (existing !== -1) list[existing] = caseEntry;
+  else list.push(caseEntry);
+  fs.writeFileSync(PROCESSES_FILE, JSON.stringify(list, null, 2));
 }
 
 // Main execution
 async function run() {
   console.log('[DR_002] Starting DR Case 2: CB-2026-0315-LNK-0082');
   ensureProcessEntry();
-  updateProcessLog([]);
+
+  // Initialize empty process file with correct structure
+  fs.writeFileSync(PROCESS_FILE, JSON.stringify({ logs: [], keyDetails: {}, sidebarArtifacts: [] }, null, 2));
   updateProcessListStatus('In Progress', 'Processing dispute');
 
-  const completedSteps = [];
-
   for (const step of STEPS) {
-    await sleep(1800);
-    completedSteps.push({
+    // Write in-progress
+    updateProcessLog({
       id: step.id,
-      title_p: step.title_p,
-      title_s: step.title_s,
-      status: 'completed',
+      title: step.title_p,
+      status: 'in-progress',
+      reasoning: [],
+      artifacts: []
+    });
+    updateProcessListStatus('In Progress', step.title_p);
+    await sleep(1800);
+
+    // Write completed
+    updateProcessLog({
+      id: step.id,
+      title: step.title_s,
+      status: 'done',
       reasoning: step.reasoning,
       artifacts: step.artifacts
     });
-    updateProcessLog(completedSteps);
     console.log(`[DR_002] Step ${step.id} completed: ${step.title_p} ${step.title_s}`);
   }
 

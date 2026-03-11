@@ -133,7 +133,7 @@ const ProcessList = ({ category = 'Data Integrity Review' }) => {
                                 <tr
                                     key={process.id}
                                     className="hover:bg-[#f9f9f9] cursor-pointer transition-colors border-b border-[#f2f2f2] last:border-0"
-                                    onClick={() => { sessionStorage.setItem('process_list_origin', location.pathname); navigate(`/done/process/${process.id}`); }}
+                                    onClick={() => { sessionStorage.setItem('process_list_origin', location.pathname); sessionStorage.setItem('process_detail_category', process.category || 'Smart Service Management'); navigate(`/done/process/${process.id}`); }}
                                 >
                                     <td className="px-6 py-2.5 whitespace-nowrap">
                                         <div className="flex items-center gap-3">

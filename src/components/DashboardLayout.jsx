@@ -257,7 +257,7 @@ const DashboardLayout = () => {
                                     <button onClick={() => navigate(sessionStorage.getItem('process_list_origin') || '/done/smart-service-management')} className="hover:bg-white rounded p-1 transition-colors">
                                         <ArrowLeft className="w-3.5 h-3.5 text-[#171717]" />
                                     </button>
-                                    <span className="text-[#171717] font-[550]">Smart Service Management</span>
+                                    <span className="text-[#171717] font-[550]">{sessionStorage.getItem('process_detail_category') || 'Smart Service Management'}</span>
                                     <ChevronRight className="w-3.5 h-3.5 text-[#c9c9c9]" />
                                     <span className="text-[#171717] font-[550]">Activity Logs</span>
                                 </>
