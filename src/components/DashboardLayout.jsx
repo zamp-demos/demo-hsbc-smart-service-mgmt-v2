@@ -246,10 +246,10 @@ const DashboardLayout = () => {
                                 </>
                             ) : location.pathname.includes('/knowledge-base') ? (
                                 <>
-                                    <button onClick={() => navigate('/done/smart-service-management')} className="hover:bg-white rounded p-1 transition-colors">
+                                    <button onClick={() => navigate(location.pathname.includes('dispute-resolution') ? '/done/dispute-resolution' : '/done/smart-service-management')} className="hover:bg-white rounded p-1 transition-colors">
                                         <ArrowLeft className="w-3.5 h-3.5 text-[#171717]" />
                                     </button>
-                                    <span className="text-[#8f8f8f] font-normal">Smart Service Management /</span>
+                                    <span className="text-[#8f8f8f] font-normal">{location.pathname.includes('dispute-resolution') ? 'Dispute Resolution' : 'Smart Service Management'} /</span>
                                     <span className="text-[#171717] font-bold">Knowledge Base</span>
                                 </>
                             ) : isProcessDetailPage ? (
@@ -262,7 +262,7 @@ const DashboardLayout = () => {
                                     <span className="text-[#171717] font-[550]">Activity Logs</span>
                                 </>
                             ) : (
-                                <span className="text-[#171717] font-[550]">Smart Service Management</span>
+                                <span className="text-[#171717] font-[550]">{location.pathname.includes('dispute-resolution') ? 'Dispute Resolution' : 'Smart Service Management'}</span>
                             )}
                         </div>
                     </div>
