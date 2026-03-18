@@ -1,5 +1,17 @@
 [
   {
+    "id": "CSC-2026-0322-DLA-0193",
+    "name": "Programme Bulk Service Request \u2014 3 Parallel Requests",
+    "category": "Smart Service Management",
+    "stockId": "CSC-2026-0322-DLA-0193",
+    "status": "Needs Attention",
+    "client": "DLA Piper LLP",
+    "cardholder": "Rachel Thornton (PA)",
+    "process": "PA Email \u2014 Multi-Request Bulk Programme Management",
+    "sm": "David Mensah",
+    "pathway": "Email + Voice Note \u2192 3 Parallel Requests \u2192 HITL (R1) \u2192 Resolve \u2192 Needs Review"
+  },
+  {
     "id": "CSC-2026-0309-AON-0847",
     "name": "Three Requests in One Email",
     "category": "Smart Service Management",
@@ -7,9 +19,9 @@
     "status": "Needs Attention",
     "client": "Aon plc (UK)",
     "cardholder": "Sophia Chen",
-    "process": "PA Email — Multi-Request Resolution",
+    "process": "PA Email \u2014 Multi-Request Resolution",
     "sm": "David Mensah",
-    "pathway": "Decline Investigation → Travel Activation → Limit Increase → Spend Data"
+    "pathway": "Decline Investigation \u2192 Travel Activation \u2192 Limit Increase \u2192 Spend Data"
   },
   {
     "id": "CSC-2026-0309-CC-0291",
@@ -19,37 +31,37 @@
     "status": "Needs Attention",
     "client": "Clifford Chance LLP (UK)",
     "cardholder": "Richard Okafor",
-    "process": "PA Email — Limit Increase Request (Possible Fraud)",
+    "process": "PA Email \u2014 Limit Increase Request (Possible Fraud)",
     "sm": "Sarah Okonkwo",
-    "pathway": "Limit Request → Fraud Alert Detected → HITL → Hold & Escalate"
+    "pathway": "Limit Request \u2192 Fraud Alert Detected \u2192 HITL \u2192 Hold & Escalate"
   },
   {
     "id": "CSC-2026-0309-HSF-0314",
-    "name": "Cardholder Name Change — Three-Document Identity Chain",
+    "name": "Cardholder Name Change \u2014 Three-Document Identity Chain",
     "category": "Smart Service Management",
     "stockId": "CSC-2026-0309-HSF-0314",
     "status": "Needs Attention",
     "client": "Herbert Smith Freehills LLP (UK)",
     "cardholder": "Eleanor Whitfield-Osei",
-    "process": "PA Email — Cardholder Name Change (Identity Chain)",
+    "process": "PA Email \u2014 Cardholder Name Change (Identity Chain)",
     "sm": "David Mensah",
-    "pathway": "Email Received → Marriage Cert Extracted → MiVision Cross-Ref → Discrepancy → Doc Request → Passport Received → Identity Chain Validated → Name Changed → Replacement Card"
+    "pathway": "Email Received \u2192 Marriage Cert Extracted \u2192 MiVision Cross-Ref \u2192 Discrepancy \u2192 Doc Request \u2192 Passport Received \u2192 Identity Chain Validated \u2192 Name Changed \u2192 Replacement Card"
   },
   {
     "id": "CB-2026-0302-WPP-0114",
-    "name": "Hotel Cancellation — Full Amount Recovered via Mastercard 4853",
+    "name": "Hotel Cancellation \u2014 Full Amount Recovered via Mastercard 4853",
     "category": "Dispute Resolution",
     "stockId": "CB-2026-0302-WPP-0114",
     "status": "In Progress",
     "client": "WPP plc (UK)",
     "cardholder": "Marcus Webb",
-    "process": "PA Email — Chargeback Filing (Hotel Cancellation)",
+    "process": "PA Email \u2014 Chargeback Filing (Hotel Cancellation)",
     "sm": "David Mensah",
-    "pathway": "Dispute Intake → Reason Code Assessment → Evidence Assembly → MDR Filing → Merchant Accepts"
+    "pathway": "Dispute Intake \u2192 Reason Code Assessment \u2192 Evidence Assembly \u2192 MDR Filing \u2192 Merchant Accepts"
   },
   {
     "id": "CB-2026-0315-LNK-0082",
-    "name": "Linklaters — Duplicate Adobe charge on ····3874",
+    "name": "Linklaters \u2014 Duplicate Adobe charge on \u00b7\u00b7\u00b7\u00b73874",
     "category": "Dispute Resolution",
     "client": "Linklaters LLP",
     "cardholder": "Amara Diallo",

@@ -1,0 +1,323 @@
+{
+  "steps": [],
+  "keyDetails": {
+    "Client": "DLA Piper LLP",
+    "Programme": "DLA-UK-CC-0089",
+    "PA": "Rachel Thornton",
+    "Case Reference": "CSC-2026-0322-DLA-0193",
+    "Requests": "3",
+    "Status": "Needs Attention"
+  },
+  "artifacts": [],
+  "sections": {
+    "activityLogs": {
+      "items": [
+        {
+          "id": "log-001",
+          "time": "09:12",
+          "text": "Email received — Rachel Thornton, DLA Piper LLP",
+          "artifacts": [
+            {
+              "id": "art-email",
+              "label": "Inbound Email — Rachel Thornton",
+              "type": "file",
+              "pdfPath": "/data/DLA_Inbound_Email.pdf"
+            }
+          ]
+        },
+        {
+          "id": "log-002",
+          "time": "09:12",
+          "text": "PA identity & programme verified — DLA-UK-CC-0089 confirmed (CRM)",
+          "artifacts": []
+        },
+        {
+          "id": "log-003",
+          "time": "09:12",
+          "text": "3 distinct requests identified — handling in parallel\n  → R1: Programme limit reallocation, 47 cards, UK Marketing sub-programme\n  → R2: New cardholder onboarding, 8 joiners, Consulting sub-programme\n  → R3: Virtual card payment query, SUP-0441, PO #PO-2026-0298",
+          "artifacts": []
+        },
+        {
+          "id": "log-004",
+          "time": "09:14",
+          "text": "Voice note received — WhatsApp, 0:43\n  └─ Sender matched — linked to case CSC-2026-0322-DLA-0193",
+          "artifacts": [
+            {
+              "id": "art-audio",
+              "label": "Voice Note — Rachel Thornton (Spanish)",
+              "type": "audio",
+              "audioPath": "/data/DLA_Voice_Note_Spanish.mp3"
+            }
+          ]
+        },
+        {
+          "id": "log-005",
+          "time": "09:14",
+          "text": "Language identified: Spanish — transcription complete",
+          "artifacts": [
+            {
+              "id": "art-transcription",
+              "label": "Voice Note Transcription (ES + EN)",
+              "type": "file",
+              "pdfPath": "/data/DLA_Voice_Note_Transcription.pdf"
+            }
+          ]
+        },
+        {
+          "id": "log-006",
+          "time": "09:14",
+          "text": "Content confirmed — voice note aligns with email requests, no new information",
+          "artifacts": []
+        },
+        {
+          "id": "log-section-r1",
+          "time": "",
+          "text": "── REQUEST 1: Programme Limit Reallocation (47 cards) ──────────────",
+          "isSectionHeader": true,
+          "artifacts": []
+        },
+        {
+          "id": "log-r1-001",
+          "time": "09:13",
+          "text": "Programme credit line validated — headroom confirmed (MiVision)",
+          "artifacts": []
+        },
+        {
+          "id": "log-r1-002",
+          "time": "09:13",
+          "text": "Card-level eligibility sweep initiated — 47 cards across Auth Platform + SAS",
+          "artifacts": []
+        },
+        {
+          "id": "log-r1-003",
+          "time": "09:14",
+          "text": "Sweep complete — 46 clean, 1 flagged\n  └─ James Osei ••••3847 — open SAS alert SAL-2026-0228-3847 (11 days, unresolved)",
+          "artifacts": [
+            {
+              "id": "art-sas-sweep",
+              "label": "SAS Sweep Report — 47 Cards",
+              "type": "file",
+              "pdfPath": "/data/DLA_SAS_Sweep_Report.pdf"
+            }
+          ]
+        },
+        {
+          "id": "log-r1-004",
+          "time": "09:15",
+          "text": "Inlogik CMP — bulk limit amendment executing for 46 clean cards",
+          "artifacts": []
+        },
+        {
+          "id": "log-r1-005",
+          "time": "09:16",
+          "text": "✓ 46 cards updated £3,000 → £5,000",
+          "artifacts": [
+            {
+              "id": "art-inlogik-amendment",
+              "label": "Inlogik Amendment Confirmation",
+              "type": "file",
+              "pdfPath": "/data/DLA_Inlogik_Bulk_Amendment_Confirmation.pdf"
+            }
+          ]
+        },
+        {
+          "id": "log-r1-006",
+          "time": "09:16",
+          "text": "⏸ AWAITING SM DECISION — card ••••3847 held",
+          "artifacts": [
+            {
+              "id": "art-hitl",
+              "label": "HITL Decision Prompt — Card ••••3847",
+              "type": "decision",
+              "options": [
+                {
+                  "id": "opt-a",
+                  "label": "Option A",
+                  "description": "Hold limit increase for ••••3847. Notify PA that 46/47 cards updated and one is under review. No further escalation.",
+                  "riskNote": "SAS alert continues to sit unactioned."
+                },
+                {
+                  "id": "opt-b",
+                  "label": "Option B — Recommended",
+                  "description": "Hold limit increase. Escalate SAS alert SAL-2026-0228-3847 to Fraud Ops for urgent disposition. Send PA a holding response confirming 46/47 complete, one card under active review.",
+                  "riskNote": "Appropriate escalation. Alert actioned. PA informed.",
+                  "recommended": true
+                },
+                {
+                  "id": "opt-c",
+                  "label": "Option C",
+                  "description": "Process limit increase for all 47 including ••••3847.",
+                  "riskNote": "Increases exposure on a card with an unresolved fraud flag. Compliance risk."
+                }
+              ],
+              "pdfPath": "/data/DLA_HITL_Decision_Prompt.pdf"
+            }
+          ]
+        },
+        {
+          "id": "log-section-r2",
+          "time": "",
+          "text": "── REQUEST 2: New Cardholder Onboarding (8 cards) ──────────────────",
+          "isSectionHeader": true,
+          "artifacts": []
+        },
+        {
+          "id": "log-r2-001",
+          "time": "09:13",
+          "text": "CRM hierarchy check — Consulting sub-programme confirmed",
+          "artifacts": []
+        },
+        {
+          "id": "log-r2-002",
+          "time": "09:13",
+          "text": "Google Sheet attachment detected — language identified: Spanish",
+          "artifacts": [
+            {
+              "id": "art-spanish-sheet",
+              "label": "DLA_Consulting_New_Joiners_March2026.xlsx (Spanish)",
+              "type": "file",
+              "pdfPath": "/data/DLA_Consulting_New_Joiners_March2026.xlsx"
+            }
+          ]
+        },
+        {
+          "id": "log-r2-003",
+          "time": "09:14",
+          "text": "Document extraction complete — 8 cardholder records extracted and structured in English",
+          "artifacts": []
+        },
+        {
+          "id": "log-r2-004",
+          "time": "09:15",
+          "text": "Inlogik CMP — issuing 8 cards at £4,000 standard limit",
+          "artifacts": []
+        },
+        {
+          "id": "log-r2-005",
+          "time": "09:17",
+          "text": "✓ 8 cards issued and added to programme hierarchy",
+          "artifacts": [
+            {
+              "id": "art-issuance",
+              "label": "Inlogik Card Issuance Summary — 8 Cards",
+              "type": "file",
+              "pdfPath": "/data/DLA_Inlogik_Card_Issuance_Summary.pdf"
+            }
+          ]
+        },
+        {
+          "id": "log-r2-006",
+          "time": "09:17",
+          "text": "MiVision — confirmed cards visible to PA",
+          "artifacts": []
+        },
+        {
+          "id": "log-r2-007",
+          "time": "09:17",
+          "text": "✓ Draft email queued — card details for 8 new joiners",
+          "artifacts": []
+        },
+        {
+          "id": "log-section-r3",
+          "time": "",
+          "text": "── REQUEST 3: SAP Taulia Virtual Card Query ─────────────────────────",
+          "isSectionHeader": true,
+          "artifacts": []
+        },
+        {
+          "id": "log-r3-001",
+          "time": "09:13",
+          "text": "Supplier query received — SUP-0441, PO #PO-2026-0298",
+          "artifacts": []
+        },
+        {
+          "id": "log-r3-002",
+          "time": "09:14",
+          "text": "SAP Taulia portal — locating virtual card against PO",
+          "artifacts": []
+        },
+        {
+          "id": "log-r3-003",
+          "time": "09:15",
+          "text": "Virtual card found — VC-2026-0298-HSBC, issued 2026-03-14",
+          "artifacts": []
+        },
+        {
+          "id": "log-r3-004",
+          "time": "09:16",
+          "text": "Auth Platform — checking authorisation status",
+          "artifacts": []
+        },
+        {
+          "id": "log-r3-005",
+          "time": "09:17",
+          "text": "✓ Payment authorised and settled — GBP 18,400 on 2026-03-15",
+          "artifacts": [
+            {
+              "id": "art-taulia",
+              "label": "Taulia Payment Record — VC-2026-0298-HSBC",
+              "type": "file",
+              "pdfPath": "/data/DLA_Taulia_Payment_Record.pdf"
+            }
+          ]
+        },
+        {
+          "id": "log-r3-006",
+          "time": "09:17",
+          "text": "✓ Draft email queued — settlement reference STL-2026-0315-VC0298 provided to PA",
+          "artifacts": []
+        },
+        {
+          "id": "log-section-r1b",
+          "time": "",
+          "text": "── REQUEST 1 RESUMED — SM selected Option B ────────────────────────",
+          "isSectionHeader": true,
+          "artifacts": []
+        },
+        {
+          "id": "log-r1b-001",
+          "time": "09:23",
+          "text": "SAS alert SAL-2026-0228-3847 escalated to Fraud Ops",
+          "artifacts": []
+        },
+        {
+          "id": "log-r1b-002",
+          "time": "09:23",
+          "text": "✓ Holding response drafted — PA notified: 46/47 complete, 1 under review",
+          "artifacts": []
+        },
+        {
+          "id": "log-section-close",
+          "time": "",
+          "text": "── CASE CLOSE ───────────────────────────────────────────────────────",
+          "isSectionHeader": true,
+          "artifacts": []
+        },
+        {
+          "id": "log-close-001",
+          "time": "09:23",
+          "text": "CRM case logged — CSC-2026-0322-DLA-0193",
+          "artifacts": []
+        },
+        {
+          "id": "log-close-002",
+          "time": "09:23",
+          "text": "✓ Full client response queued for SM approval",
+          "artifacts": [
+            {
+              "id": "art-draft-response",
+              "label": "Draft Client Response — Rachel Thornton",
+              "type": "email_draft",
+              "pdfPath": "/data/DLA_Draft_Client_Response.pdf",
+              "data": {
+                "to": "Rachel Thornton <r.thornton@dlapiper.com>",
+                "subject": "Re: Programme DLA-UK-CC-0089 — Three Service Requests",
+                "body": "Dear Rachel,\n\nThank you for your email regarding programme DLA-UK-CC-0089. I'm pleased to confirm the following updates on your three requests:\n\nRequest 1 — Programme Limit Reallocation (UK Marketing):\nWe have successfully increased individual spend limits from £3,000 to £5,000 for 46 of the 47 cards in your UK Marketing sub-programme, effective immediately.\n\nOne card (ending ••••3847) has been temporarily held as it is subject to an active internal review. Our team is working to resolve this as a priority.\n\nRequest 2 — New Cardholder Onboarding (Consulting):\nAll 8 new corporate cards for your Consulting sub-programme have been successfully issued at the standard £4,000 limit. The cards are now active and visible to you in MiVision.\n\nRequest 3 — Virtual Card Payment Query (SUP-0441, PO #PO-2026-0298):\nPayment of GBP 18,400 was authorised and settled on 15 March 2026. Settlement reference: STL-2026-0315-VC0298.\n\nKind regards,\n[SM Name]\nHSBC Commercial Cards"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

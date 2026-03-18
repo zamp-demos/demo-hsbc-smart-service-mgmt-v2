@@ -1,7 +1,109 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { FileText, Video, Database, ChevronUp, ChevronDown, Check, Maximize2, Loader2, Star, MonitorPlay, Image as ImageIcon, Table as TableIcon, Send, X, Trash2, ArrowLeft, MoreHorizontal, Minimize2, Bold, Italic, Underline, AlignLeft, List, Link, Asterisk, Presentation, ArrowUp, ArrowDown, Activity, ExternalLink, Search, Minus, Plus as PlusIcon, RotateCw, Download, Printer, Pin, Menu, Filter, Sliders, Layout, LayoutGrid } from 'lucide-react';
+import { FileText, Video, Database, ChevronUp, ChevronDown, Check, Maximize2, Loader2, Star, MonitorPlay, Image as ImageIcon, Table as TableIcon, Send, X, Trash2, ArrowLeft, MoreHorizontal, Minimize2, Bold, Italic, Underline, AlignLeft, List, Link, Asterisk, Presentation, ArrowUp, ArrowDown, Activity, ExternalLink, Search, Minus, Plus as PlusIcon, RotateCw, Download, Printer, Pin, Menu, Filter, Sliders, Layout, LayoutGrid, Mic, Play, Pause } from 'lucide-react';
 
+
+const AudioPlayer = ({ artifact, onClose }) => {
+    const audioRef = useRef(null);
+    const [isPlaying, setIsPlaying] = useState(false);
+    const [currentTime, setCurrentTime] = useState(0);
+    const [duration, setDuration] = useState(0);
+    const [bars] = useState(() => Array.from({ length: 40 }, () => Math.random() * 0.7 + 0.15));
+
+    const togglePlay = () => {
+        if (!audioRef.current) return;
+        if (isPlaying) {
+            audioRef.current.pause();
+        } else {
+            audioRef.current.play();
+        }
+        setIsPlaying(!isPlaying);
+    };
+
+    const formatTime = (t) => {
+        const m = Math.floor(t / 60);
+        const s = Math.floor(t % 60);
+        return `${m}:${s.toString().padStart(2, '0')}`;
+    };
+
+    const progress = duration > 0 ? currentTime / duration : 0;
+
+    return (
+        <div className="flex flex-col h-full bg-white overflow-hidden flex-1 min-w-[500px]">
+            <div className="flex items-center justify-between px-4 py-3 border-b border-gray-200 bg-white">
+                <div className="flex items-center gap-3">
+                    <Mic className="w-4 h-4 text-gray-500" />
+                    <span className="font-medium text-gray-900 text-sm">{artifact.label}</span>
+                </div>
+                <button onClick={onClose} className="p-1.5 hover:bg-gray-100 rounded text-gray-400">
+                    <X className="w-5 h-5" />
+                </button>
+            </div>
+
+            <div className="flex-1 flex flex-col items-center justify-center p-12 bg-[#f9fafb]">
+                <div className="w-full max-w-md bg-white rounded-2xl shadow-lg border border-gray-100 p-8">
+                    {/* Icon */}
+                    <div className="flex justify-center mb-6">
+                        <div className="w-16 h-16 rounded-full bg-[#DB0011]/10 flex items-center justify-center">
+                            <Mic className="w-7 h-7 text-[#DB0011]" />
+                        </div>
+                    </div>
+
+                    {/* Title */}
+                    <p className="text-center text-sm font-medium text-gray-800 mb-1">Voice Note — Spanish</p>
+                    <p className="text-center text-xs text-gray-400 mb-6">Rachel Thornton · DLA Piper LLP · WhatsApp · 0:43</p>
+
+                    {/* Waveform */}
+                    <div className="flex items-center gap-[2px] h-12 mb-5 px-1">
+                        {bars.map((h, i) => {
+                            const barProgress = i / bars.length;
+                            const isPast = barProgress < progress;
+                            const isActive = isPlaying && Math.abs(barProgress - progress) < 0.05;
+                            return (
+                                <div
+                                    key={i}
+                                    className="flex-1 rounded-full transition-all duration-100"
+                                    style={{
+                                        height: `${h * 100}%`,
+                                        backgroundColor: isPast ? '#DB0011' : '#E5E7EB',
+                                        transform: isActive ? 'scaleY(1.3)' : 'scaleY(1)',
+                                    }}
+                                />
+                            );
+                        })}
+                    </div>
+
+                    {/* Progress */}
+                    <div className="flex justify-between text-xs text-gray-400 mb-5">
+                        <span>{formatTime(currentTime)}</span>
+                        <span>{formatTime(duration || 43)}</span>
+                    </div>
+
+                    {/* Play button */}
+                    <div className="flex justify-center">
+                        <button
+                            onClick={togglePlay}
+                            className="w-12 h-12 rounded-full bg-[#DB0011] hover:bg-[#b0000d] flex items-center justify-center shadow-md transition-colors"
+                        >
+                            {isPlaying
+                                ? <Pause className="w-5 h-5 text-white" />
+                                : <Play className="w-5 h-5 text-white ml-0.5" />
+                            }
+                        </button>
+                    </div>
+                </div>
+
+                <audio
+                    ref={audioRef}
+                    src={`${import.meta.env.VITE_API_URL || ''}${artifact.audioPath}`}
+                    onTimeUpdate={() => setCurrentTime(audioRef.current?.currentTime || 0)}
+                    onLoadedMetadata={() => setDuration(audioRef.current?.duration || 43)}
+                    onEnded={() => setIsPlaying(false)}
+                />
+            </div>
+        </div>
+    );
+};
 
 const VideoViewer = ({ artifact, onClose }) => {
     return (
@@ -1059,6 +1161,7 @@ const ProcessDetails = () => {
         switch (iconType) {
             case 'file': return FileText;
             case 'video': return ExternalLink;
+            case 'audio': return Mic;
             case 'dashboard': return FileText;
             case 'image': return ImageIcon;
             case 'table': return FileText;
@@ -1369,6 +1472,10 @@ const ProcessDetails = () => {
                         {/* Specialized Viewers */}
                         {selectedArtifact.type === 'video' && (
                             <VideoViewer artifact={selectedArtifact} onClose={closeArtifactPanel} />
+                        )}
+
+                        {selectedArtifact.type === 'audio' && (
+                            <AudioPlayer artifact={selectedArtifact} onClose={closeArtifactPanel} />
                         )}
 
                         {selectedArtifact.type === 'file' && (
