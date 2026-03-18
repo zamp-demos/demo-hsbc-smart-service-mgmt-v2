@@ -175,13 +175,25 @@ const server = http.createServer(async (req, res) => {
                         process: "Duplicate Charge — Chargeback Filing (Adobe Systems)",
                         sm: "Sarah Okonkwo",
                         pathway: "Dispute Intake → Duplicate Confirmed → Evidence Assembly → MDR Filing → Merchant Accepts"
+                    },
+                    {
+                        id: "CSC-2026-0322-DLA-0193",
+                        name: "Programme Bulk Service Request — 3 Parallel Requests",
+                        category: "Smart Service Management",
+                        stockId: "CSC-2026-0322-DLA-0193",
+                        status: "In Progress",
+                        client: "DLA Piper LLP",
+                        cardholder: "Rachel Thornton (PA)",
+                        process: "PA Email — Multi-Request Bulk Programme Management",
+                        sm: "David Mensah",
+                        pathway: "Email + Voice Note → 3 Parallel Requests → HITL (R1) → Resolve → Needs Review"
                     }
                 ];
                 fs.writeFileSync(PROCESSES_FILE, JSON.stringify(cases, null, 4));
 
                 // Reset process log files
                 const emptyLog = JSON.stringify({ logs: [], keyDetails: {} }, null, 4);
-                ["CSC-2026-0309-AON-0847", "CSC-2026-0309-CC-0291", "CSC-2026-0309-HSF-0314", "CB-2026-0302-WPP-0114"].forEach(id => {
+                ["CSC-2026-0309-AON-0847", "CSC-2026-0309-CC-0291", "CSC-2026-0309-HSF-0314", "CB-2026-0302-WPP-0114", "CSC-2026-0322-DLA-0193"].forEach(id => {
                     const f = path.join(DATA_DIR, `process_${id}.json`);
                     if (fs.existsSync(f)) fs.writeFileSync(f, emptyLog);
                 });
