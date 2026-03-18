@@ -2,27 +2,27 @@
   "rewrites": [
     {
       "source": "/api/:path*",
-      "destination": "https://hsbc-demo-server.up.railway.app/api/:path*"
+      "destination": "https://backend-production-e2d5.up.railway.app/api/:path*"
     },
     {
       "source": "/signal",
-      "destination": "https://hsbc-demo-server.up.railway.app/signal"
+      "destination": "https://backend-production-e2d5.up.railway.app/signal"
     },
     {
       "source": "/signal-status",
-      "destination": "https://hsbc-demo-server.up.railway.app/signal-status"
+      "destination": "https://backend-production-e2d5.up.railway.app/signal-status"
     },
     {
       "source": "/email-status",
-      "destination": "https://hsbc-demo-server.up.railway.app/email-status"
+      "destination": "https://backend-production-e2d5.up.railway.app/email-status"
     },
     {
       "source": "/reset",
-      "destination": "https://hsbc-demo-server.up.railway.app/reset"
+      "destination": "https://backend-production-e2d5.up.railway.app/reset"
     },
     {
       "source": "/health",
-      "destination": "https://hsbc-demo-server.up.railway.app/health"
+      "destination": "https://backend-production-e2d5.up.railway.app/health"
     },
     {
       "source": "/((?!data/).*)",
