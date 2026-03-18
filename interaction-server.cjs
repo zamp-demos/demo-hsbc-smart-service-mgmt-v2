@@ -94,6 +94,13 @@ const server = http.createServer(async (req, res) => {
         return;
     }
 
+    // GET /health — Railway healthcheck
+    if (cleanPath === '/health') {
+        res.writeHead(200, { ...corsHeaders, 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ status: 'ok', service: 'hsbc-demo-server' }));
+        return;
+    }
+
     // GET /reset
     if (cleanPath === '/reset') {
         state = { emailSent: {}, confirmed: false, signals: {} };

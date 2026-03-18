@@ -1,5 +1,32 @@
 {
-    "rewrites": [
-        { "source": "/((?!data/).*)", "destination": "/index.html" }
-    ]
+  "rewrites": [
+    {
+      "source": "/api/:path*",
+      "destination": "https://hsbc-demo-server.up.railway.app/api/:path*"
+    },
+    {
+      "source": "/signal",
+      "destination": "https://hsbc-demo-server.up.railway.app/signal"
+    },
+    {
+      "source": "/signal-status",
+      "destination": "https://hsbc-demo-server.up.railway.app/signal-status"
+    },
+    {
+      "source": "/email-status",
+      "destination": "https://hsbc-demo-server.up.railway.app/email-status"
+    },
+    {
+      "source": "/reset",
+      "destination": "https://hsbc-demo-server.up.railway.app/reset"
+    },
+    {
+      "source": "/health",
+      "destination": "https://hsbc-demo-server.up.railway.app/health"
+    },
+    {
+      "source": "/((?!data/).*)",
+      "destination": "/index.html"
+    }
+  ]
 }
