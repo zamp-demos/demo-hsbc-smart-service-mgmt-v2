@@ -1,5 +1,427 @@
 {
-    "logs": [],
-    "keyDetails": {},
-    "sidebarArtifacts": []
+    "keyDetails": {
+        "Client": "DLA Piper LLP",
+        "Cardholder": "Rachel Thornton (PA)",
+        "Programme": "DLA-UK-CC-2024",
+        "SM Assigned": "David Mensah",
+        "Request Type": "Bulk Programme Request (3 parallel)",
+        "Requests": "R1: Programme-wide limit sweep (47 cards, 1 SAS flag) • R2: New cardholder onboarding (8 joiners) • R3: Virtual card settlement query"
+    },
+    "sidebarArtifacts": [
+        {
+            "id": "sa-001",
+            "type": "email_draft",
+            "label": "Inbound Email — Rachel Thornton",
+            "icon": "gmail"
+        },
+        {
+            "id": "sa-002",
+            "type": "audio",
+            "label": "DLA Voice Note Spanish.mp3",
+            "icon": "audio"
+        },
+        {
+            "id": "sa-003",
+            "type": "file",
+            "label": "Voice Note — Transcription (es → en)",
+            "icon": "file"
+        },
+        {
+            "id": "sa-004",
+            "type": "file",
+            "label": "CRM Programme Summary",
+            "icon": "file"
+        },
+        {
+            "id": "sa-005",
+            "type": "file",
+            "label": "DLA SAS Sweep Report",
+            "icon": "file"
+        },
+        {
+            "id": "sa-006",
+            "type": "file",
+            "label": "DLA Inlogik Bulk Amendment Confirmation",
+            "icon": "file"
+        },
+        {
+            "id": "sa-007",
+            "type": "file",
+            "label": "DLA HITL Decision Prompt",
+            "icon": "file"
+        },
+        {
+            "id": "sa-008",
+            "type": "file",
+            "label": "DLA Consulting New Joiners — Google Sheet (es → en)",
+            "icon": "file"
+        },
+        {
+            "id": "sa-009",
+            "type": "file",
+            "label": "DLA Inlogik Card Issuance Summary",
+            "icon": "file"
+        },
+        {
+            "id": "sa-010",
+            "type": "file",
+            "label": "DLA Taulia Payment Record",
+            "icon": "file"
+        },
+        {
+            "id": "sa-011",
+            "type": "file",
+            "label": "Draft Client Response — Rachel Thornton",
+            "icon": "file"
+        }
+    ],
+    "logs": [
+        {
+            "id": "log-001",
+            "time": "09:01:04",
+            "title": "Inbound email received from Rachel Thornton (PA) at DLA Piper — voice note attached",
+            "status": "success",
+            "reasoning": [
+                "Inbound email received from rachel.thornton@dlapiper.com at 09:01:04 GMT to hsbc.commercialcards.uk@hsbc.com.",
+                "Sender domain verified as dlapiper.com — matched to active programme DLA-UK-CC-2024. SM assigned: David Mensah.",
+                "Email contained a 47-second voice note attachment (DLA_Voice_Note_Spanish.mp3). Voice note transcribed in parallel using speech-to-text. Language detected: Spanish.",
+                "Three distinct requests extracted from email body and voice note: R1 — programme-wide limit sweep for UK Marketing sub-programme (47 cards, £3,000 → £5,000); R2 — new cardholder onboarding for 8 consulting joiners (Spanish Google Sheet attached); R3 — virtual card payment query for supplier SUP-0441.",
+                "All three requests confirmed within PA authority scope under POL-DLA-UK-2024. Three parallel workstreams initialised at 09:01:09 GMT."
+            ],
+            "artifacts": [
+                {
+                    "id": "art-001a",
+                    "type": "email_draft",
+                    "label": "Inbound Email — Rachel Thornton",
+                    "data": {
+                        "from": "rachel.thornton@dlapiper.com",
+                        "to": "hsbc.commercialcards.uk@hsbc.com",
+                        "subject": "Three things — DLA programme",
+                        "isIncoming": true,
+                        "body": "Hi HSBC,\n\nThree things I need sorting today — I'll be quick.\n\n1. UK Marketing sub-programme (47 cards): our Q2 push starts Monday and the team needs limits lifted from £3,000 to £5,000 across the board. Total programme headroom should cover it — please confirm and apply.\n\n2. Eight new joiners in Consulting — details in the attached Google Sheet (sorry, our Madrid office sent it in Spanish). Standard limit for each, please.\n\n3. One of our suppliers (SUP-0441) says they haven't received payment against PO #PO-2026-0298. The virtual card should have settled — can you confirm and send me the reference?\n\nThanks as always,\nRachel\n\n--\nRachel Thornton\nGlobal Programme Administrator | DLA Piper LLP\nrachel.thornton@dlapiper.com | +44 20 7153 7000 ext. 3241"
+                    }
+                },
+                {
+                    "id": "art-001b",
+                    "type": "audio",
+                    "label": "DLA Voice Note Spanish.mp3",
+                    "audioPath": "/data/DLA_Voice_Note_Spanish.mp3"
+                },
+                {
+                    "id": "art-001c",
+                    "type": "file",
+                    "label": "Voice Note — Transcription (es → en)",
+                    "pdfPath": "/data/DLA_Voice_Note_Transcription.pdf"
+                }
+            ]
+        },
+        {
+            "id": "log-003",
+            "time": "09:01:09",
+            "title": "Intent parsed — 3 distinct requests identified, R1 dispatched first",
+            "status": "success",
+            "reasoning": [
+                "NLP classification applied to email body and voice note transcript.",
+                "R1 classified: programme-wide limit amendment — 47 cards, UK Marketing sub-programme, £3,000 → £5,000. Requires programme credit line check before card-level changes.",
+                "R2 classified: new cardholder onboarding — 8 joiners, Consulting sub-programme. Spanish-language attachment detected; extraction queued.",
+                "R3 classified: virtual card payment query — supplier SUP-0441, PO #PO-2026-0298. Requires Taulia portal + Auth Platform check.",
+                "R1 dispatched to programme sweep workstream. R2 and R3 queued in parallel."
+            ],
+            "artifacts": []
+        },
+        {
+            "id": "log-004",
+            "time": "09:01:14",
+            "title": "[R1] Programme sweep initiated — UK Marketing sub-programme, 47 cards",
+            "status": "success",
+            "reasoning": [
+                "R1 workstream initiated. Target: all 47 cards under DLA-UK-CC-2024 UK Marketing sub-programme.",
+                "MiVision queried at programme level for credit line headroom check.",
+                "Card-level eligibility sweep queued: Auth Platform + SAS check for all 47 cards in parallel."
+            ],
+            "artifacts": []
+        },
+        {
+            "id": "log-005",
+            "time": "09:01:22",
+            "title": "[R1] Programme credit line validated — headroom confirmed",
+            "status": "success",
+            "reasoning": [
+                "Pace queried MiVision at programme level for DLA-UK-CC-2024.",
+                "Current total programme credit limit: £2,350,000. Current aggregate card utilisation: £847,200 (36%).",
+                "UK Marketing sub-programme: 47 active cards, aggregate current limits £141,000. Requested uplift: 47 × £2,000 = £94,000 additional exposure.",
+                "Post-uplift aggregate for UK Marketing: £235,000. Total programme exposure post-change: £941,200 — within the programme ceiling with £1,408,800 remaining headroom.",
+                "Programme credit line check passed. Proceeding to card-level eligibility sweep."
+            ],
+            "artifacts": [
+                {
+                    "id": "art-005a",
+                    "type": "file",
+                    "label": "CRM Programme Summary",
+                    "pdfPath": "/data/CRM_Programme_Summary.pdf"
+                }
+            ]
+        },
+        {
+            "id": "log-006",
+            "time": "09:01:38",
+            "title": "[R1] SAS sweep complete — 1 flag raised on card ••••3847",
+            "status": "success",
+            "reasoning": [
+                "Pace ran all 47 cards through Auth Platform and SAS in parallel batch mode.",
+                "46 cards returned clean: no open alerts, no outstanding disputes, no compliance holds.",
+                "Card ••••3847 (cardholder: James Osei, Senior Account Director) returned an active SAS flag: alert SAL-2026-0228-3847, raised 11 days ago for suspicious transaction pattern. Alert status: Open. No disposition recorded. Escalated to Fraud Ops 8 days ago with no resolution.",
+                "Limit increase cannot be auto-processed for card ••••3847 under programme policy POL-DLA-UK-2024 Section 9.4 — open fraud alert blocks limit amendments.",
+                "46 clean cards queued for Inlogik bulk amendment. Card ••••3847 quarantined for HITL decision."
+            ],
+            "artifacts": [
+                {
+                    "id": "art-006a",
+                    "type": "file",
+                    "label": "DLA SAS Sweep Report",
+                    "pdfPath": "/data/DLA_SAS_Sweep_Report.pdf"
+                }
+            ]
+        },
+        {
+            "id": "log-009",
+            "time": "09:01:51",
+            "title": "[R1] Inlogik bulk amendment submitted — 46 clean cards updated £3,000 → £5,000",
+            "status": "success",
+            "reasoning": [
+                "Pace navigated to Inlogik CMP, selected UK Marketing sub-programme, filtered to the 46 flagged-clean cards.",
+                "Bulk limit amendment applied: £3,000 → £5,000 for all 46 cards simultaneously. Amendment reference: BLK-2026-0322-DLA-046.",
+                "MiVision confirmation screenshot captured — updated limits visible on all 46 card profiles.",
+                "Card ••••3847 excluded from this amendment batch and held pending HITL decision.",
+                "Total cards updated: 46. Total additional programme exposure applied: £92,000."
+            ],
+            "artifacts": [
+                {
+                    "id": "art-009a",
+                    "type": "file",
+                    "label": "DLA Inlogik Bulk Amendment Confirmation",
+                    "pdfPath": "/data/DLA_Inlogik_Bulk_Amendment_Confirmation.pdf"
+                }
+            ]
+        },
+        {
+            "id": "log-007",
+            "time": "09:02:03",
+            "title": "[R1] HITL required — James Osei ••••3847 flagged, open SAS alert SAL-2026-0228-3847",
+            "status": "warning",
+            "reasoning": [
+                "Card ••••3847 blocked from auto-amendment due to active, unresolved SAS alert SAL-2026-0228-3847.",
+                "Alert raised: 28 February 2026. Escalated to Fraud Ops: 14 March 2026. Current status: Open. No disposition recorded.",
+                "Three options presented to SM David Mensah for decision on card ••••3847."
+            ],
+            "artifacts": [
+                {
+                    "id": "art-007a",
+                    "type": "file",
+                    "label": "DLA HITL Decision Prompt",
+                    "pdfPath": "/data/DLA_HITL_Decision_Prompt.pdf",
+                    "isHitl": true,
+                    "hitlOptions": [
+                        {
+                            "label": "Option A",
+                            "description": "Hold limit increase for card ••••3847. Notify PA that 46/47 cards updated, one under review. No further escalation.",
+                            "risk": "PA may chase. Fraud alert continues to sit unactioned."
+                        },
+                        {
+                            "label": "Option B — Recommended",
+                            "description": "Hold limit increase, escalate SAS alert SAL-2026-0228-3847 to Fraud Ops for urgent disposition. Send PA holding response: 46/47 complete, one card under active review.",
+                            "risk": "Proactive. Forces Fraud Ops to close the loop. PA gets transparency without investigative detail."
+                        },
+                        {
+                            "label": "Option C",
+                            "description": "Process limit increase for all 47 cards including ••••3847 and flag internally.",
+                            "risk": "Increases exposure on a card with an unresolved fraud flag. Compliance risk."
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "id": "log-011",
+            "time": "09:02:10",
+            "title": "[R2] Google Sheet attachment detected — language identified: Spanish",
+            "status": "success",
+            "reasoning": [
+                "Attachment DLA_Consulting_New_Joiners_March2026.xlsx extracted from email.",
+                "Language detection: Spanish (es). Sheet contains 8 rows of new joiner data.",
+                "Columns detected: Nombre completo, Correo electrónico, DNI/Pasaporte, Fecha de inicio, Departamento, Oficina.",
+                "Translation pipeline initiated. Data being extracted and mapped to HSBC cardholder onboarding schema."
+            ],
+            "artifacts": [
+                {
+                    "id": "art-011a",
+                    "type": "file",
+                    "label": "DLA Consulting New Joiners — Google Sheet (es → en)",
+                    "pdfPath": "/data/DLA_Consulting_New_Joiners_March2026.xlsx"
+                }
+            ]
+        },
+        {
+            "id": "log-011b",
+            "time": "09:02:18",
+            "title": "[R2] Document extraction complete — 8 cardholder records structured in English",
+            "status": "success",
+            "reasoning": [
+                "All 8 rows extracted and translated from Spanish to English.",
+                "Cardholder records validated: names, emails, IDs, start dates, departments, office locations all present.",
+                "Programme defaults applied: DLA Piper Consulting onboarding template loaded — standard limit £4,000 per card, cost centre DLA-CONS-2024.",
+                "No data quality issues. 8 records queued for Inlogik bulk submission."
+            ],
+            "artifacts": []
+        },
+        {
+            "id": "log-012",
+            "time": "09:02:24",
+            "title": "[R2] Programme defaults applied — DLA Piper onboarding template loaded",
+            "status": "success",
+            "reasoning": [
+                "DLA Piper Consulting onboarding template loaded from programme configuration.",
+                "Defaults applied: card limit £4,000 (standard new joiner), cost centre DLA-CONS-2024, billing cycle monthly, statement currency GBP.",
+                "CRM hierarchy check passed: all 8 applicants verified as new DLA Piper employees. No duplicates detected.",
+                "Batch of 8 card applications prepared for Inlogik submission."
+            ],
+            "artifacts": []
+        },
+        {
+            "id": "log-013",
+            "time": "09:02:31",
+            "title": "[R2] Bulk submission to Inlogik — 8 card applications submitted",
+            "status": "success",
+            "reasoning": [
+                "Pace navigated to Inlogik CMP and submitted 8 new cardholder applications in batch.",
+                "Bank-acceptance gate confirmed: PA Rachel Thornton cannot self-serve new card issuance in MiVision — HSBC submission required.",
+                "All 8 applications submitted under programme DLA-UK-CC-2024, Consulting sub-programme, £4,000 limit each.",
+                "Inlogik batch reference: ISS-2026-0322-DLA-008. Expected card issuance: 3–5 business days."
+            ],
+            "artifacts": [
+                {
+                    "id": "art-013a",
+                    "type": "file",
+                    "label": "DLA Inlogik Card Issuance Summary",
+                    "pdfPath": "/data/DLA_Inlogik_Card_Issuance_Summary.pdf"
+                }
+            ]
+        },
+        {
+            "id": "log-014",
+            "time": "09:02:37",
+            "title": "[R2] Confirmation email drafted — 8 new joiner cards in progress",
+            "status": "success",
+            "reasoning": [
+                "Draft confirmation email prepared covering R2 outcome.",
+                "Email confirms 8 applications submitted, Inlogik batch reference ISS-2026-0322-DLA-008, expected issuance 3–5 business days.",
+                "Included in consolidated reply — will be sent once SM approves R1 HITL decision."
+            ],
+            "artifacts": []
+        },
+        {
+            "id": "log-015",
+            "time": "09:02:44",
+            "title": "[R3] Voice note transcribed — virtual card payment query identified",
+            "status": "success",
+            "reasoning": [
+                "Voice note (DLA_Voice_Note_Spanish.mp3) transcribed from Spanish to English.",
+                "Content: Rachel queries why supplier SUP-0441 has not received payment against PO #PO-2026-0298.",
+                "Query type classified: virtual card settlement status check.",
+                "Virtual card lookup initiated: searching Auth Platform for card linked to PO #PO-2026-0298."
+            ],
+            "artifacts": [
+                {
+                    "id": "art-015a",
+                    "type": "audio",
+                    "label": "DLA Voice Note Spanish.mp3",
+                    "audioPath": "/data/DLA_Voice_Note_Spanish.mp3"
+                },
+                {
+                    "id": "art-015b",
+                    "type": "file",
+                    "label": "DLA Voice Note Transcription",
+                    "pdfPath": "/data/DLA_Voice_Note_Transcription.pdf"
+                }
+            ]
+        },
+        {
+            "id": "log-016",
+            "time": "09:02:51",
+            "title": "[R3] Query intent: virtual card payment status — supplier SUP-0441, PO #PO-2026-0298",
+            "status": "success",
+            "reasoning": [
+                "Pace navigated to SAP Taulia portal for DLA Piper account.",
+                "PO #PO-2026-0298 located: supplier SUP-0441, invoice amount £12,840.00, due date 18 March 2026.",
+                "Virtual card VC-2026-0298-HSBC identified as the payment instrument for this PO.",
+                "Auth Platform queried for virtual card authorisation and settlement status."
+            ],
+            "artifacts": []
+        },
+        {
+            "id": "log-017",
+            "time": "09:02:58",
+            "title": "[R3] Virtual card located — VC-2026-0298-HSBC, payment authorised and settled",
+            "status": "success",
+            "reasoning": [
+                "Virtual card VC-2026-0298-HSBC confirmed: authorisation approved 17 March 2026 at 14:22 GMT. Amount: £12,840.00.",
+                "Settlement confirmed: 18 March 2026. Settlement reference: STL-2026-0318-VC0298.",
+                "Supplier-side delay likely: funds settled to acquiring bank but may take 1–2 business days to reflect in supplier's account.",
+                "Taulia payment record captured. Confirmation email drafted for PA with settlement reference and advice to supplier."
+            ],
+            "artifacts": [
+                {
+                    "id": "art-017a",
+                    "type": "file",
+                    "label": "DLA Taulia Payment Record",
+                    "pdfPath": "/data/DLA_Taulia_Payment_Record.pdf"
+                }
+            ]
+        },
+        {
+            "id": "log-018",
+            "time": "09:03:04",
+            "title": "[R3] Confirmation email drafted — settlement reference provided to PA",
+            "status": "success",
+            "reasoning": [
+                "Draft R3 response prepared: settlement reference STL-2026-0318-VC0298, funds cleared 18 March, recommendation for supplier to check with acquiring bank.",
+                "Included in consolidated reply — queued pending SM email send action on R1 HITL."
+            ],
+            "artifacts": []
+        },
+        {
+            "id": "log-008",
+            "time": "09:08:41",
+            "title": "[R1] HITL resolved — Option B selected, ••••3847 escalated to Fraud Ops",
+            "status": "success",
+            "reasoning": [
+                "SM David Mensah selected Option B: hold limit increase for card ••••3847, escalate SAS alert SAL-2026-0228-3847 to Fraud Ops for urgent disposition.",
+                "Fraud Ops escalation logged. Urgent disposition request submitted referencing open alert and PA limit request as catalyst.",
+                "Card ••••3847 limit remains at £3,000 pending Fraud Ops resolution.",
+                "PA holding response drafted: 46/47 cards updated, one card under active review."
+            ],
+            "artifacts": []
+        },
+        {
+            "id": "log-019",
+            "time": "09:08:47",
+            "title": "All 3 requests complete — consolidated reply sent to Rachel Thornton",
+            "status": "completed",
+            "reasoning": [
+                "R1: 46/47 cards updated £3,000 → £5,000. Card ••••3847 held; Fraud Ops alerted for urgent resolution.",
+                "R2: 8 new joiner cards submitted to Inlogik. Batch reference ISS-2026-0322-DLA-008. ETA 3–5 business days.",
+                "R3: Virtual card VC-2026-0298-HSBC payment confirmed settled 18 March. Settlement reference STL-2026-0318-VC0298 shared with PA.",
+                "Consolidated reply sent to rachel.thornton@dlapiper.com covering all three requests.",
+                "CRM case logged with full audit trail."
+            ],
+            "artifacts": [
+                {
+                    "id": "art-019a",
+                    "type": "file",
+                    "label": "Draft Client Response — Rachel Thornton",
+                    "pdfPath": "/data/DLA_Draft_Client_Response.pdf"
+                }
+            ]
+        }
+    ]
 }
